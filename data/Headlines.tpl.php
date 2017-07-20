@@ -1,4 +1,4 @@
-<?PHP
+<?php
 ///////////////////// TEMPLATE Headlines /////////////////////
 $template_active = <<<HTML
 [link]{title}[/link], by {author} posted on {date}<br />
@@ -86,4 +86,3 @@ HTML;
 $template_prev_next = <<<HTML
 
 HTML;
-?>

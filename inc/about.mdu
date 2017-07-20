@@ -1,11 +1,10 @@
-<?PHP
+<?php
 
 // ********************************************************************************
 // CuteCode
 // ********************************************************************************
-if($action == "cutecode")
-{
-echo"<html>
+if ($action == "cutecode") {
+    echo"<html>
 	<head>
 	<title>CuteCode</title>
     <style type=\"text/css\">
@@ -185,9 +184,8 @@ echo"<html>
     <label><input type=checkbox checked name=ifClose> Close this window after I insert code</label>
 	</tr></form>
 	</table></body></HTML>";
-}
-else{
-	echoheader("question", "Help / About");
+} else {
+    echoheader("question", "Help / About");
 
     echo"<table border=0 cellpadding=0 cellspacing=0 width=\"654\" height=\"175\" >
     <tr>
@@ -253,7 +251,5 @@ else{
     </tr>
     </table>";
 
-	echofooter();
+    echofooter();
 }
-
-?>

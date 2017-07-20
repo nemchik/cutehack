@@ -1,4 +1,4 @@
-<?PHP
+<?php
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   Our Help Sections
@@ -279,9 +279,11 @@ HTML;
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   Load the specified section in PopUp Window
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-if(isset($section)){
-	if(!isset($help_sections["$section"])){ die("Can not find the specified section <b>$section</b>"); }
-	echo"<HTML>
+if (isset($section)) {
+    if (!isset($help_sections["$section"])) {
+        die("Can not find the specified section <b>$section</b>");
+    }
+    echo"<HTML>
     <style type=\"text/css\">
 	<!--
 	a:active,a:visited,a:link {color: #446488; text-decoration: none; font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 8pt;}
@@ -317,11 +319,8 @@ if(isset($section)){
     <BODY>
 		". $help_sections["$section"] ."
     </BODY></HTML>";
-}
-
-else{
-
-	echoheader("question", "Help Documentation");
+} else {
+    echoheader("question", "Help Documentation");
     echo"<style type=\"text/css\">
 	<!--
 	.code {
@@ -349,10 +348,9 @@ else{
 	}
 	-->
 	</style>";
-    foreach($help_sections as $null => $help_section){
-    	echo"$help_section<br /><br />";
+    foreach ($help_sections as $null => $help_section) {
+        echo"$help_section<br /><br />";
     }
 
-	echofooter();
+    echofooter();
 }
-?>

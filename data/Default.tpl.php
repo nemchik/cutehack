@@ -1,4 +1,4 @@
-<?PHP
+<?php
 ///////////////////// TEMPLATE Default /////////////////////
 $template_active = <<<HTML
 <table border="0" width="420" cellspacing="1" cellpadding="3">
@@ -112,4 +112,3 @@ HTML;
 $template_comments_prev_next = <<<HTML
 <p align="center">[prev-link]&laquo; Older[/prev-link] ({pages}) [next-link]Newer &raquo;[/next-link]</p>
 HTML;
-?>

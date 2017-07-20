@@ -1,4 +1,4 @@
-<?PHP
+<?php
 
 $skin_prefix = "";
 
@@ -171,5 +171,3 @@ $skin_footer = <<<HTML
     <br /><center>{copyrights}
     </body></html>
 HTML;
-
-?>

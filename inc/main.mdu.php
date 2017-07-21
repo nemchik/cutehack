@@ -145,12 +145,12 @@ echoheader("home", "Welcome");
   //----------------------------------
   // Install script still exists ?
   //----------------------------------
-  if (file_exists('./inc/install.mdu')) {
+  if (file_exists('./inc/install.mdu.php')) {
       $freespace = formatsize($dfs);
       echo"<tr><td class=warningbox colspan=5 height=1>
          <b>Attention!</b><br />
          CuteNews found that the installation module is still located in the /inc folder.<br />
-         Please delete or rename the <b>/inc/install.mdu</b> file for security reasons.
+         Please delete or rename the <b>/inc/install.mdu.php</b> file for security reasons.
          </td></tr>";
   }
 

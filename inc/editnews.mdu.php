@@ -497,7 +497,7 @@ elseif ($action == "editnews") {
 
 // XFields v2.1 - addblock
 $xfieldsaction = "categoryfilter";
-    include("xfields.mdu");
+    include("xfields.mdu.php");
 // XFields v2.1 - End addblock
 
 // <!-- Start ModifyTime v2.0 -->
@@ -656,7 +656,7 @@ $xfieldsaction = "categoryfilter";
     $xfieldsaction = "list";
     $xfieldsid = $id;
     $xfieldscat = $item_db[6];
-    include("xfields.mdu");
+    include("xfields.mdu.php");
     if ($config_allow_short == "yes"  || $config_short_full == "short") {
         echo"</tr>
 
@@ -921,7 +921,7 @@ elseif ($action == "doeditnews") {
 if ($ifdelete != "yes") {
     $xfieldsaction = "init";
     $xfieldsid = $id;
-    include("xfields.mdu");
+    include("xfields.mdu.php");
 }
 // XFields v2.1 - End addblock
         $old_db = file("$news_file");
@@ -945,7 +945,7 @@ if ($ifdelete != "yes") {
                 // XFields v2.1 - addblock
 $xfieldsaction = ($ifdelete == "yes" ? "delete" : "save");
                 $xfieldsid = $id;
-                include("xfields.mdu");
+                include("xfields.mdu.php");
 // XFields v2.1 - End addblock
                 if ($ifdelete != "yes") {
                     $okchanges = true;

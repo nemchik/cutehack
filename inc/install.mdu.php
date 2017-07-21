@@ -371,7 +371,7 @@ HTML;
         <br />
         You can now go to CuteNews <a href="index.php">login page</a>.<br /><br>
     It is recommended that you read the CuteNews README file where is explained how to show news on your page.<br />
-        <font color="#999999">note: you should now delete ./inc/install.mdu file for
+        <font color="#999999">note: you should now delete ./inc/install.mdu.php file for
         security reasons</font>
     </td>
         </tr>

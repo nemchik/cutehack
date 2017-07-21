@@ -434,7 +434,7 @@ $article_counter = file("$cutepath/data/counter.db.php");
 $xfieldsaction = "templatereplace";
             $xfieldsinput = $output;
             $xfieldsid = $news_arr[0];
-            include("xfields.mdu");
+            include("xfields.mdu.php");
             $output = $xfieldsoutput;
 // XFields v2.1 - End addblock
 
@@ -853,7 +853,7 @@ if (isset($sortby)) {
 
 if (isset($sortbyxfield)) {
     $xfieldsaction = 'noop';
-    include_once($cutepath.'/inc/xfields.mdu');
+    include_once($cutepath.'/inc/xfields.mdu.php');
     if (!function_exists("sortcmp")) {
         function sortcmp($a, $b)
         {
@@ -1002,7 +1002,7 @@ $article_counter = file("$cutepath/data/counter.db.php");
 $xfieldsaction = "templatereplace";
             $xfieldsinput = $output;
             $xfieldsid = $news_arr[0];
-            include("xfields.mdu");
+            include("xfields.mdu.php");
             $output = $xfieldsoutput;
 // XFields v2.1 - End addblock
         $output = replace_news("show", $output);

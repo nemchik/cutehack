@@ -172,7 +172,7 @@ if ($short_story == "") {
 // XFields v2.1 - addblock
 $xfieldsaction = "templatereplacepreview";
 $xfieldsinput = $output;
-include("xfields.mdu");
+include("xfields.mdu.php");
 $output = $xfieldsoutput;
 // XFields v2.1 - End addblock
     $output = replace_news("show", $output);
@@ -269,7 +269,7 @@ if ($full_story) {
 // XFields v2.1 - addblock
 $xfieldsaction = "templatereplacepreview";
     $xfieldsinput = $output;
-    include("xfields.mdu");
+    include("xfields.mdu.php");
     $output = $xfieldsoutput;
 // XFields v2.1 - End addblock
     $output = replace_news("show", $output);

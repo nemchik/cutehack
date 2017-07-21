@@ -19,7 +19,7 @@ if ($action == "addnews") {
 
 // XFields v2.1 - addblock
 $xfieldsaction = "categoryfilter";
-    include("xfields.mdu");
+    include("xfields.mdu.php");
 // XFields v2.1 - End addblock
 
 // <!-- Start ModifyTime v2.0 -->
@@ -165,7 +165,7 @@ $xfieldsaction = "categoryfilter";
 // XFields v2.1 - addblock
 $xfieldsaction = "list";
     $xfieldsadd = true;
-    include("xfields.mdu");
+    include("xfields.mdu.php");
 // XFields v2.1 - End addblock
 if ($config_allow_short == "yes"  || $config_short_full == "short") {
     echo"<tr>
@@ -323,9 +323,9 @@ $all_db = file("./data/news.db.php");
 // XFields v2.1 - addblock
 $xfieldsid = $added_time;
     $xfieldsaction = "init";
-    include("xfields.mdu");
+    include("xfields.mdu.php");
     $xfieldsaction = "save";
-    include("xfields.mdu");
+    include("xfields.mdu.php");
 // XFields v2.1 - End addblock
 if ($disable_comments != 1) {
     $disable_comments = 0;

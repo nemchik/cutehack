@@ -66,7 +66,7 @@ elseif ($action == "do_mass_delete") {
 // XFields v2.1 - addblock
 $xfieldsaction = "delete";
             $xfieldsid = $old_db_arr[0];
-            include("xfields.mdu");
+            include("xfields.mdu.php");
 // XFields v2.1 - End addblock
         }
     }

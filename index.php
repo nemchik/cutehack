@@ -24,11 +24,11 @@ $check_users = $all_users_db;
 $check_users[1] = trim($check_users[1]);
 $check_users[2] = trim($check_users[2]);
 if ((!$check_users[2] or $check_users[2] == "") and (!$check_users[1] or $check_users[1] == "")) {
-    if (!file_exists("./inc/install.mdu")) {
+    if (!file_exists("./inc/install.mdu.php")) {
         die('<h2>Error!</h2>CuteNews detected that you do not have users in your users.db.php file and wants to run the install module.<br />
-    However, the install module (<b>./inc/install.mdu</b>) can not be located, please reupload this file and make sure you set the proper permissions so the installation can continue.');
+    However, the install module (<b>./inc/install.mdu.php</b>) can not be located, please reupload this file and make sure you set the proper permissions so the installation can continue.');
     }
-    require("./inc/install.mdu");
+    require("./inc/install.mdu.php");
     die();
 }
 
@@ -96,12 +96,12 @@ if ($is_logged_in) {
     );
 
     if ($mod == "") {
-        require("./inc/main.mdu");
+        require("./inc/main.mdu.php");
     } elseif ($system_modules[$mod]) {
         if ($system_modules[$mod] == "user") {
-            require("./inc/". $mod . ".mdu");
+            require("./inc/". $mod . ".mdu.php");
         } elseif ($system_modules[$mod] == "admin" and $member_db[1] == 1) {
-            require("./inc/". $mod . ".mdu");
+            require("./inc/". $mod . ".mdu.php");
         } elseif ($system_modules[$mod] == "admin" and $member_db[1] != 1) {
             msg("error", "Access denied", "Only admin can access this module");
             exit;

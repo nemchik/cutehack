@@ -1,4 +1,4 @@
-<?PHP
+<?php
 $skin_prefix = "";
 // *********
 // Skin MENU
@@ -96,4 +96,3 @@ $skin_footer=<<<HTML
 <br /><center>{copyrights}
 </body></html>
 HTML;
-?>

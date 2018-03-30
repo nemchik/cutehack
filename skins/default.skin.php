@@ -1,4 +1,4 @@
-<?PHP
+<?php
 
 $skin_prefix = "";
 
@@ -37,16 +37,48 @@ $skin_menu = <<<HTML
 HTML;
 
 // ********************************************************************************
-// Skin HEADER
+// Skin CSS
 // ********************************************************************************
-$skin_header = <<<HTML
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-<head>
-<script type="text/javascript" src="skins/cute.js"></script>
+
+$skin_css = <<<HTML
 <style type="text/css">
 <!--
-select, option, textarea, input {
+
+#tablist a {
+        font-weight: bold;
+        text-decoration: none;
+        color: #000000;
+}
+
+#tablist a:hover {
+        text-decoration: underline;
+}
+
+#tablist td {
+        background: #F7F6F4;
+        border-right: 1px solid #808080;
+        border-bottom: 1px solid #808080;
+}
+#tablist th {
+        font-weight: none;
+        font-size: 11px;
+        background:#999999;
+        color:#ffffff;
+}
+
+input.radiobutton { border: 0px; background-color: transparent; }
+
+select, option {
+COLOR: #000000;
+FONT-SIZE: 11px;
+FONT-FAMILY: Verdana; BACKGROUND-COLOR: #ffffff }
+
+select:hover, option:hover,select:focus, option:focus {
+COLOR: #DF1111;
+FONT-SIZE: 11px;
+FONT-FAMILY: Verdana; BACKGROUND-COLOR: #ffffff }
+
+textarea, input {
 BORDER-RIGHT: #808080 1px solid;
 BORDER-TOP: #808080 1px solid;
 BORDER-BOTTOM: #808080 1px solid;
@@ -61,13 +93,32 @@ a:hover {color: #00004F; text-decoration: none; font-family: Verdana, Arial, Hel
 a.nav:active, a.nav:visited,  a.nav:link { color: #000000; font-size : 10px; font-weight: bold; font-family: verdana; text-decoration: none;}
 a.nav:hover { font-size : 10px; font-weight: bold; color: black; font-family: verdana; text-decoration: underline; }
 
-.header { font-size : 16px; font-weight: bold; color: #808080; font-family: verdana; text-decoration: none;  }
+.header { font-size: 16px; font-weight: bold; color: #808080; font-family: verdana; text-decoration: none; }
 .bborder        { background-color: #FFFFFF; border: 1px #A7A6B4 solid; }
 .panel                {-moz-border-radius: .3em .3em .3em .3em; border: 1px dotted silver; background-color: #F7F6F4;}
-
-BODY, TD, TR {text-decoration: none; font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 8pt; cursor: default;}
+.smallesttext {font-size: 7pt; }
+.altern1 {background: #F7F6F4; }
+.altern2 {background: #FFFFFF; }
+.warning {color: orange;}
+.error {color: #DF1111;}
+.pass {color: #336633;}
+.grayborder{ border: 1px solid #808080; }
+.warningbox{ padding:3px; border:1px dashed orange; background-color:yellow; color: #000000; }
+TD {text-decoration: none; font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 8pt;}
+BODY {text-decoration: none; font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 3pt;}
 -->
 </style>
+HTML;
+
+// ********************************************************************************
+// Skin HEADER
+// ********************************************************************************
+$skin_header = <<<HTML
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<script type="text/javascript" src="skins/cute.js"></script>
+$skin_css
         <title>CuteNews</title>
 </head>
 
@@ -120,5 +171,3 @@ $skin_footer = <<<HTML
     <br /><center>{copyrights}
     </body></html>
 HTML;
-
-?>

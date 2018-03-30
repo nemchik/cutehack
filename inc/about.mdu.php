@@ -1,11 +1,10 @@
-<?PHP
+<?php
 
 // ********************************************************************************
 // CuteCode
 // ********************************************************************************
-if($action == "cutecode")
-{
-echo"<html>
+if ($action == "cutecode") {
+    echo"<html>
 	<head>
 	<title>CuteCode</title>
     <style type=\"text/css\">
@@ -185,11 +184,10 @@ echo"<html>
     <label><input type=checkbox checked name=ifClose> Close this window after I insert code</label>
 	</tr></form>
 	</table></body></HTML>";
-}
-else{
-	echoheader("question", "Help / About");
+} else {
+    echoheader("question", "Help / About");
 
-    echo"<table border=0 cellpading=0 cellspacing=0 width=\"654\" height=\"175\" >
+    echo"<table border=0 cellpadding=0 cellspacing=0 width=\"654\" height=\"175\" >
     <tr>
     <td width=\"650\" valign=\"middle\" height=\"1\" bgcolor=\"#F7F6F4\" colspan=\"3\">
     &nbsp; <font size=\"2\"><b>Help &amp; Support</b></font>&nbsp;
@@ -227,36 +225,6 @@ else{
 
 
 
-
-
-
-    <tr>
-    <td colspan=\"3\" bgcolor=\"#f7f6f4\" height=\"1\" valign=\"middle\" width=\"650\">
-    &nbsp;&nbsp;<font size=\"2\"><b>Support this Script - Donate</b></font>
-    </td></tr>
-    <tr>
-    <td  height=\"24\" valign=\"middle\" width=\"29\">
-    </td><td colspan=\"3\" height=\"30\" valign=\"middle\" >
-
-    If you are using this script and you like it, donating to the authors of CuteNews will help for improving and continuing the development. Thank You!
-<form style=\"border:0px; cursor:hand;\" action=\"https://www.paypal.com/cgi-bin/webscr\" method=\"post\">
-<input type=\"hidden\" name=\"cmd\" value=\"_xclick\">
-<input type=\"hidden\" name=\"business\" value=\"flexer@gmail.com\">
-<input type=\"hidden\" name=\"item_name\" value=\"CutePHP Scripts\">
-<input type=\"hidden\" name=\"no_note\" value=\"1\">
-<input type=\"hidden\" name=\"currency_code\" value=\"GBP\">
-
-<input type=\"hidden\" name=\"tax\" value=\"0\">
-<input type=\"image\" src=\"https://www.paypal.com/en_US/i/btn/x-click-but21.gif\" border=\"0\" name=\"submit\" alt=\"Make payments with PayPal - it's fast, free and secure!\">
-</form>
-
-    </td></tr>
-
-
-
-
-
-
     <tr>
     <td width=\"650\" valign=\"middle\" height=\"1\" bgcolor=\"#F7F6F4\" colspan=\"3\">
     &nbsp; <font size=\"2\"><b>Rate our Script</b></font>
@@ -283,7 +251,5 @@ else{
     </tr>
     </table>";
 
-	echofooter();
+    echofooter();
 }
-
-?>

@@ -1,30 +1,85 @@
-<?PHP
+<?php
 
-$getVarsRaw = explode('&', $_SERVER['QUERY_STRING']);
-foreach ($getVarsRaw as $getVarRaw) {
-list($varName, $varValue) = explode('=', $getVarRaw, 2);
-$$varName = $varValue;
+if ($HTTP_SESSION_VARS) {
+    extract($HTTP_SESSION_VARS, EXTR_SKIP);
 }
-#print_r($GLOBALS);
+if ($_SESSION) {
+    extract($_SESSION, EXTR_SKIP);
+}
+if ($HTTP_COOKIE_VARS) {
+    extract($HTTP_COOKIE_VARS, EXTR_SKIP);
+}
+if ($_COOKIE) {
+    extract($_COOKIE, EXTR_SKIP);
+}
+if ($HTTP_POST_VARS) {
+    extract($HTTP_POST_VARS, EXTR_SKIP);
+}
+if ($_POST) {
+    extract($_POST, EXTR_SKIP);
+}
+if ($HTTP_GET_VARS) {
+    extract($HTTP_GET_VARS, EXTR_SKIP);
+}
+if ($_GET) {
+    extract($_GET, EXTR_SKIP);
+}
+if ($HTTP_ENV_VARS) {
+    extract($HTTP_ENV_VARS, EXTR_SKIP);
+}
+if ($_ENV) {
+    extract($_ENV, EXTR_SKIP);
+}
 
-if ($HTTP_SESSION_VARS) {extract($HTTP_SESSION_VARS, EXTR_SKIP);}
-if ($_SESSION)          {extract($_SESSION, EXTR_SKIP);}
-if ($HTTP_COOKIE_VARS)  {extract($HTTP_COOKIE_VARS, EXTR_SKIP);}
-if ($_COOKIE)           {extract($_COOKIE, EXTR_SKIP);}
-if ($HTTP_POST_VARS)    {extract($HTTP_POST_VARS, EXTR_SKIP);}
-if ($_POST)             {extract($_POST, EXTR_SKIP);}
-if ($HTTP_GET_VARS)     {extract($HTTP_GET_VARS, EXTR_SKIP);}
-if ($_GET)              {extract($_GET, EXTR_SKIP);}
-if ($HTTP_ENV_VARS)     {extract($HTTP_ENV_VARS, EXTR_SKIP);}
-if ($_ENV)              {extract($_ENV, EXTR_SKIP);}
 
-
-if($PHP_SELF == ""){ $PHP_SELF = $HTTP_SERVER_VARS["PHP_SELF"]; }
+if ($PHP_SELF == "") {
+    $PHP_SELF = $_SERVER["PHP_SELF"];
+}
 
 $phpversion = @phpversion();
 
 $a7f89abdcf9324b3 = "";
 
+$config_version_name = "CuteHack v0.1.9";
+$config_version_id = 999;
+
+///////////////////////////////////////////////////////
+// Function:         timeoffser
+// Description: give the time offset
+
+function timeoffset($date_adjust)
+{
+    $offtime = (($date_adjust*60)/3600);
+    if (strstr($offtime, "-")) {
+        $sin = "-";
+        $offtime = str_replace("-", "", $offtime);
+    } else {
+        $sin = "+";
+    }
+    if (strstr($offtime, ".")) {
+        $hrsmin = explode(".", $offtime);
+        $hrs = $hrsmin[0];
+        if ($hrs <= 9) {
+            $hrs = "0$hrs";
+        }
+        $min = $hrsmin[1]/(1/60);
+        if ($min <= 9) {
+            $min = "0$min";
+        }
+    } else {
+        $hrs = $offtime;
+        if ($hrs <= 9) {
+            $hrs = "0$hrs";
+        }
+        $min = "00";
+    }
+    $offset = "GMT $sin$hrs:$min";
+    return $offset;
+}
+
+///////////////////////////////////////////////////////
+// Function:         HTML Fixes
+// Description: Fixes HTML issues
 
 $comm_start_from = htmlspecialchars($comm_start_from);
 $start_from = htmlspecialchars($start_from);
@@ -36,116 +91,106 @@ $category = htmlspecialchars($category);
 $number = htmlspecialchars($number);
 $template = htmlspecialchars($template);
 
-
-$config_version_name = "CuteNews v1.3.6";
-$config_version_id = 159;
-
 ///////////////////////////////////////////////////////
 // Function:         formatsize
 // Description: Format the size of given file
 
-function formatsize($file_size){
-
-    if($file_size >= 1073741824)
-            {$file_size = round($file_size / 1073741824 * 100) / 100 . "Gb";}
-    elseif($file_size >= 1048576)
-            {$file_size = round($file_size / 1048576 * 100) / 100 . "Mb";}
-    elseif($file_size >= 1024)
-            {$file_size = round($file_size / 1024 * 100) / 100 . "Kb";}
-    else{$file_size = $file_size . "b";}
-
-return $file_size;
-}
-
-///////////////////////////////////////////////////////
-// Class:         microTimer
-// Description: calculates the micro time
-
-class microTimer {
-    function start() {
-        global $starttime;
-        $mtime = microtime ();
-        $mtime = explode (' ', $mtime);
-        $mtime = $mtime[1] + $mtime[0];
-        $starttime = $mtime;
+function formatsize($file_size)
+{
+    if ($file_size >= 1073741824) {
+        $file_size = round($file_size / 1073741824 * 100) / 100 . "Gb";
+    } elseif ($file_size >= 1048576) {
+        $file_size = round($file_size / 1048576 * 100) / 100 . "Mb";
+    } elseif ($file_size >= 1024) {
+        $file_size = round($file_size / 1024 * 100) / 100 . "Kb";
+    } else {
+        $file_size = $file_size . "b";
     }
-    function stop() {
-        global $starttime;
-        $mtime = microtime ();
-        $mtime = explode (' ', $mtime);
-        $mtime = $mtime[1] + $mtime[0];
-        $endtime = $mtime;
-        $totaltime = round (($endtime - $starttime), 5);
-        return $totaltime;
-    }
-}
 
+    return $file_size;
+}
 
 ///////////////////////////////////////////////////////
 // Function:         check_login
 // Description: Check login information
 
-function check_cute_login($username, $md5_password){
-        $result = FALSE;
-    $full_member_db = file(dirname(dirname(__FILE__))."/data/users.db.php");
-    global $member_db;
-
-    foreach($full_member_db as $member_db_line)
-    {
-                if(!eregi("<\?",$member_db_line)){
-                $member_db = explode("|",$member_db_line);
-                if(strtolower($member_db[2]) == strtolower($username) && $member_db[3] == $md5_password)
-                {
-                                $result = TRUE;
+function check_login($fusername, $fpassword, $ftime, $fextravar)
+{
+    global $cutepath, $member_db;
+    $result = false;
+    $full_member_db = file($cutepath."/data/users.db.php");
+    foreach ($full_member_db as $null => $member_db_line) {
+        if (!eregi("<\?", $member_db_line)) {
+            $member_db = explode("|", $member_db_line);
+            if ($fextravar=="session") {
+                if (strtolower($member_db[2]) == strtolower($fusername) and md5($member_db[3].$ftime) == $fpassword and $ftime!=time() and $ftime+3600>=$member_db[9]) {
+                    $result = true;
                     break;
-            }
                 }
+            }
+            if (strtolower($member_db[2]) == strtolower($fusername) and md5($member_db[3].$ftime) == $fpassword and $ftime!=time() and $ftime>=$member_db[9]) {
+                $result = true;
+                break;
+            }
         }
-        return $result;
+    }
+    return $result;
 }
 
 ///////////////////////////////////////////////////////
 // Function:         cute_query_string
 // Description: Format the Query_String for CuteNews purpuses index.php?
 
-function cute_query_string($q_string, $strips, $type="get"){
-        foreach($strips as $key){
-                $strips[$key] = TRUE;
+function cute_query_string($q_string, $strips, $type="get")
+{
+    foreach ($strips as $null => $key) {
+        $strips[$key] = true;
     }
-        $var_value = explode("&", $q_string);
+    $var_value = explode("&", $q_string);
 
-    foreach($var_value as $var_peace){
+    foreach ($var_value as $null => $var_peace) {
         $parts = explode("=", $var_peace);
-        if($strips[$parts[0]] != TRUE and $parts[0] != ""){
-                        if($type == "post"){
-                    $my_q .= "<input type=\"hidden\" name=\"".$parts[0]."\" value=\"".$parts[1]."\" />\n";
-            }else{
+        if ($strips[$parts[0]] != true and $parts[0] != "") {
+            if ($type == "post") {
+                $my_q .= "<input type=\"hidden\" name=\"".$parts[0]."\" value=\"".$parts[1]."\" />\n";
+            } else {
+                if ($parts[0] == "PHPSESSID") {
+                    $my_q = $my_q;
+                } else {
                     $my_q .= "$var_peace&amp;";
-                        }
+                }
+            }
         }
     }
 
-if( substr($my_q, -5) == "&amp;" ){ $my_q = substr($my_q, 0, -5); }
-
-return $my_q;
+    if (substr($my_q, -5) == "&amp;") {
+        $my_q = substr($my_q, 0, -5);
+    }
+    return $my_q;
 }
 
 ///////////////////////////////////////////////////////
 // Function:        Flooder
 // Description: Flood Protection Function
-function flooder($ip, $comid){
+function flooder($ip, $comid)
+{
     global $cutepath, $config_flood_time;
 
-        $old_db = file("$cutepath/data/flood.db.php");
-        $new_db = fopen("$cutepath/data/flood.db.php", w);
-    $result = FALSE;
-    foreach($old_db as $old_db_line){
+    $old_db = file("$cutepath/data/flood.db.php");
+    $new_db = fopen("$cutepath/data/flood.db.php", w);
+    fwrite($new_db, "<?PHP die(\"You don't have access to open this file !!!\"); ?>\n");
+    $result = false;
+    foreach ($old_db as $null => $old_db_line) {
+        if (eregi("<\?", $old_db_line)) {
+            continue;
+        }
         $old_db_arr = explode("|", $old_db_line);
 
-        if(($old_db_arr[0] + $config_flood_time) > time() ){
-                fwrite($new_db, $old_db_line);
-                if($old_db_arr[1] == $ip and $old_db_arr[2] == $comid)
-            { $result = TRUE; }
+        if (($old_db_arr[0] + $config_flood_time) > time()) {
+            fwrite($new_db, $old_db_line);
+            if ($old_db_arr[1] == $ip and $old_db_arr[2] == $comid) {
+                $result = true;
+            }
         }
     }
     fclose($new_db);
@@ -156,16 +201,17 @@ function flooder($ip, $comid){
 // Function:         msg
 // Description: Displays message to user
 
-function msg($type, $title, $text, $back=FALSE){
-  echoheader($type, $title);
-  global $lang;
-          echo"<table border=0 cellpading=0 cellspacing=0 width=100% height=100%><tr><td >$text";
-    if($back){
-                echo"<br /><br> <a href=\"$back\">go back</a>";
+function msg($type, $title, $text, $back=false)
+{
+    echoheader($type, $title);
+    global $lang;
+    echo"<table border=0 cellpadding=0 cellspacing=0 width=100% height=100%><tr><td >$text";
+    if ($back) {
+        echo"<br /><br /> <a href=\"$back\">go back</a>";
     }
     echo"</td></tr></table>";
-  echofooter();
-exit();
+    echofooter();
+    exit();
 }
 
 
@@ -174,16 +220,21 @@ exit();
 // Function:         echoheader
 // Description: Displays header skin
 
-function echoheader($image, $header_text){
-        global $PHP_SELF, $is_loged_in, $config_skin, $skin_header, $lang_content_type, $skin_menu, $skin_prefix, $config_version_name;
+function echoheader($image, $header_text)
+{
+    global $PHP_SELF, $is_logged_in, $config_skin, $skin_header, $lang_content_type, $skin_menu, $skin_prefix, $config_version_name;
 
-    if($is_loged_in == TRUE){ $skin_header = preg_replace("/{menu}/", "$skin_menu", "$skin_header"); }
-    else { $skin_header = preg_replace("/{menu}/", " &nbsp; $config_version_name", "$skin_header"); }
+    if ($is_logged_in == true) {
+        $skin_header = preg_replace("/{menu}/", "$skin_menu", "$skin_header");
+    } else {
+        $skin_header = preg_replace("/{menu}/", " &nbsp; $config_version_name", "$skin_header");
+    }
 
     $skin_header = get_skin($skin_header);
     $skin_header = preg_replace("/{image-name}/", "${skin_prefix}${image}", $skin_header);
     $skin_header = preg_replace("/{header-text}/", $header_text, $skin_header);
     $skin_header = preg_replace("/{content-type}/", $lang_content_type, $skin_header);
+    $skin_header = preg_replace("/{css}/", $skin_css, $skin_header);
 
     echo $skin_header;
 }
@@ -192,158 +243,169 @@ function echoheader($image, $header_text){
 // Function:         echofooter
 // Description: Displays footer skin
 
-function echofooter(){
+function echofooter()
+{
+    global $PHP_SELF, $is_logged_in, $config_skin, $skin_footer, $lang_content_type, $skin_menu, $skin_prefix, $config_version_name;
 
-        global $PHP_SELF, $is_loged_in, $config_skin, $skin_footer, $lang_content_type, $skin_menu, $skin_prefix, $config_version_name;
-
-    if($is_loged_in == TRUE){ $skin_footer = preg_replace("/{menu}/", "$skin_menu", "$skin_footer"); }
-    else { $skin_footer = preg_replace("/{menu}/", " &nbsp; $config_version_name", "$skin_footer"); }
+    if ($is_logged_in == true) {
+        $skin_footer = preg_replace("/{menu}/", "$skin_menu", "$skin_footer");
+    } else {
+        $skin_footer = preg_replace("/{menu}/", " &nbsp; $config_version_name", "$skin_footer");
+    }
 
     $skin_footer = get_skin($skin_footer);
     $skin_footer = preg_replace("/{image-name}/", "${skin_prefix}${image}", $skin_footer);
     $skin_footer = preg_replace("/{header-text}/", $header_text, $skin_footer);
     $skin_footer = preg_replace("/{content-type}/", $lang_content_type, $skin_footer);
+    $skin_footer = preg_replace("/{css}/", $skin_css, $skin_footer);
 
     // Do not remove the Copyrights!
-    $skin_footer = preg_replace("/{copyrights}/", "<div style='font-size: 9px'>Powered by <a style='font-size: 9px' href=\"http://cutephp.com/cutenews/\" target=_blank>$config_version_name</a> © 2004  <a style='font-size: 9px' href=\"http://cutephp.com/\" target=_blank>CutePHP</a>.</div>", $skin_footer);
+    $skin_footer = preg_replace("/{copyrights}/", "<span style='font-size: 9px'>Powered by <a style='font-size: 9px' href=\"http://cutephp.com/cutenews/\" target=_blank>$config_version_name</a> ï¿½ 2004  <a style='font-size: 9px' href=\"http://cutephp.com/\" target=_blank>CutePHP</a>.</span>", $skin_footer);
 
     echo $skin_footer;
-
 }
 
 ////////////////////////////////////////////////////////
 // Function:         b64dck
 // Description: And the duck fly away.
-function b64dck(){
-    $cr = bd_config('e2NvcHlyaWdodHN9');$shder = bd_config('c2tpbl9oZWFkZXI=');$sfter = bd_config('c2tpbl9mb290ZXI=');
-        global $$shder,$$sfter;
+function b64dck()
+{
+    $cr = bd_config('e2NvcHlyaWdodHN9');
+    $shder = bd_config('c2tpbl9oZWFkZXI=');
+    $sfter = bd_config('c2tpbl9mb290ZXI=');
+    global $$shder,$$sfter;
     $HDpnlty = bd_config('PGNlbnRlcj48aDE+Q3V0ZU5ld3M8L2gxPjxhIGhyZWY9Imh0dHA6Ly9jdXRlcGhwLmNvbSI+Q3V0ZVBIUC5jb208L2E+PC9jZW50ZXI+PGJyPg==');
-    $FTpnlty = bd_config('PGNlbnRlcj48ZGl2IGRpc3BsYXk9aW5saW5lIHN0eWxlPSdmb250LXNpemU6IDExcHgnPlBvd2VyZWQgYnkgPGEgc3R5bGU9J2ZvbnQtc2l6ZTogMTFweCcgaHJlZj0iaHR0cDovL2N1dGVwaHAuY29tL2N1dGVuZXdzLyIgdGFyZ2V0PV9ibGFuaz5DdXRlTmV3czwvYT4gqSAyMDA0ICA8YSBzdHlsZT0nZm9udC1zaXplOiAxMXB4JyBocmVmPSJodHRwOi8vY3V0ZXBocC5jb20vIiB0YXJnZXQ9X2JsYW5rPkN1dGVQSFA8L2E+LjwvZGl2PjwvY2VudGVyPg==');
+    $FTpnlty = bd_config('PGNlbnRlcj48c3BhbiBkaXNwbGF5PWlubGluZSBzdHlsZT0iZm9udC1zaXplOiAxMXB4Ij5Qb3dlcmVkIGJ5IDxhIHN0eWxlPSJmb250LXNpemU6IDExcHgiIGhyZWY9Imh0dHA6Ly9jdXRlcGhwLmNvbS9jdXRlbmV3cy8iIHRhcmdldD1fYmxhbms+Q3V0ZUhhY2s8L2E+IKkgMjAwNSAgPGEgc3R5bGU9ImZvbnQtc2l6ZTogMTFweCIgaHJlZj0iaHR0cDovL2N1dGVwaHAuY29tLyIgdGFyZ2V0PV9ibGFuaz5DdXRlUEhQPC9hPi48L3NwYW4+PC9jZW50ZXI+');
 
-        if(!stristr($$shder,$cr) and !stristr($$sfter,$cr)){ $$shder = $HDpnlty.$$shder; $$sfter = $$sfter.$FTpnlty; }
+    if (!stristr($$shder, $cr) and !stristr($$sfter, $cr)) {
+        $$shder = $HDpnlty.$$shder;
+        $$sfter = $$sfter.$FTpnlty;
+    }
 }
 ////////////////////////////////////////////////////////
 // Function:         CountComments
 // Description: Count How Many Comments Have a Specific Article
 
-function CountComments($id, $archive = FALSE){
-
+function CountComments($id, $archive = false)
+{
     global $cutepath;
 
-    if($cutepath == ""){ $cutepath = dirname(dirname(__FILE__)); }
+    if ($cutepath == "") {
+        $cutepath = ".";
+    }
     $result = "0";
-    if($archive){ $all_comments = file("$cutepath/data/archives/${archive}.comments.arch"); }
-    else{ $all_comments = file("$cutepath/data/comments.txt"); }
+    if ($archive) {
+        $all_comments = file("$cutepath/data/archives/${archive}.comments.arch.php");
+    } else {
+        $all_comments = file("$cutepath/data/comments.db.php");
+    }
 
-    foreach($all_comments as $comment_line)
-    {
-                $comment_arr_1 = explode("|>|", $comment_line);
-        if($comment_arr_1[0] == $id)
-        {
-                        $comment_arr_2 = explode("||", $comment_arr_1[1]);
+    foreach ($all_comments as $null => $comment_line) {
+        if (eregi("<\?", $comment_line)) {
+            continue;
+        }
+        $comment_arr_1 = explode("|>|", $comment_line);
+        if ($comment_arr_1[0] == $id) {
+            $comment_arr_2 = explode("||", $comment_arr_1[1]);
             $result = count($comment_arr_2)-1;
-
         }
     }
 
-return $result;
+    return $result;
 }
 
 ////////////////////////////////////////////////////////
 // Function:         insertSmilies
 // Description: insert smilies for adding into news/comments
 
-function insertSmilies($insert_location, $break_location = FALSE)
+function insertSmilies($insert_location, $break_location = false)
 {
     global $config_http_script_dir, $config_smilies;
 
     $smilies = explode(",", $config_smilies);
-        foreach($smilies as $smile)
-        {
-        $i++; $smile = trim($smile);
+    foreach ($smilies as $null => $smile) {
+        $i++;
+        $smile = trim($smile);
 
         $output .= "<a href=\"javascript:insertext(':$smile:','$insert_location')\"><img style=\"border: none;\" alt=\"$smile\" src=\"$config_http_script_dir/data/emoticons/$smile.gif\" /></a>";
-                if($i%$break_location == 0 and $break_location)
-                {
-                        $output .= "<br />";
-                }else{ $output .= "&nbsp;"; }
+        if ($i%$break_location == 0 and $break_location) {
+            $output .= "<br />";
+        } else {
+            $output .= "&nbsp;";
+        }
     }
-        return $output;
+    return $output;
 }
 
 ////////////////////////////////////////////////////////
 // Function:         replace_comments
 // Description: Replaces comments charactars
-function replace_comment($way, $sourse){
+function replace_comment($way, $sourse)
+{
     global $config_allow_html_in_news, $config_allow_html_in_comments, $config_http_script_dir, $config_smilies;
 
     $sourse = stripslashes(trim($sourse));
 
-        if($way == "add"){
+    if ($way == "add") {
+        $find = array();
+        $find[] = "'\"'";
+        $find[] = "'\''";
+        $find[] = "'<'";
+        $find[] = "'>'";
+        $find[] = "'\|'";
+        $find[] = "'\n'";
+        $find[] = "'\r'";
 
-                $find = array(
-                                    "'\"'",
-                                        "'\''",
-                                        "'<'",
-                                        "'>'",
-                                        "'\|'",
-                                        "'\n'",
-                                        "'\r'",
-                         );
-                $replace = array(
-                                    "&quot;",
-                                        "&#039;",
-                                        "&lt;",
-                                        "&gt;",
-                                         "&#124;",
-                                        " <br />",
-									    "",
-                         );
+        $replace = array();
+        $replace[] = "&#034;";
+        $replace[] = "&#039;";
+        $replace[] = "&#060;";
+        $replace[] = "&#062;";
+        $replace[] = "&#124;";
+        $replace[] = " <br />";
+        $replace[] = "";
+    } elseif ($way == "show") {
+        $find = array();
+        $find[] = "'\[b\](.*?)\[/b\]'i";
+        $find[] = "'\[i\](.*?)\[/i\]'i";
+        $find[] = "'\[u\](.*?)\[/u\]'i";
+        $find[] = "'\[link\](.*?)\[/link\]'i";
+        $find[] = "'\[link=(.*?)\](.*?)\[/link\]'i";
 
-    }
-    elseif($way == "show"){
+        $find[] = "'\[quote=(.*?)\](.*?)\[/quote\]'";
+        $find[] = "'\[quote\](.*?)\[/quote\]'";
 
-                $find = array(
-                                        "'\[b\](.*?)\[/b\]'i",
-                                        "'\[i\](.*?)\[/i\]'i",
-                                        "'\[u\](.*?)\[/u\]'i",
-                                        "'\[link\](.*?)\[/link\]'i",
-                                        "'\[link=(.*?)\](.*?)\[/link\]'i",
+        $replace = array();
+        $replace[] = "<strong>\\1</strong>";
+        $replace[] = "<em>\\1</em>";
+        $replace[] = "<span style=\"text-decoration: underline;\">\\1</span>";
+        $replace[] = "<a href=\"\\1\">\\1</a>";
+        $replace[] = "<a href=\"\\1\">\\2</a>";
 
-                    "'\[quote=(.*?)\](.*?)\[/quote\]'",
-                    "'\[quote\](.*?)\[/quote\]'",
-                     );
-                $replace = array(
-                                        "<strong>\\1</strong>",
-                                        "<em>\\1</em>",
-                                        "<span style=\"text-decoration: underline;\">\\1</span>",
-                                        "<a href=\"\\1\">\\1</a>",
-                                        "<a href=\"\\1\">\\2</a>",
+        $replace[] = "<blockquote><div style=\"font-size: 13px;\">quote (\\1):</div><hr style=\"border: 1px solid #ACA899;\" /><div>\\2</div><hr style=\"border: 1px solid #ACA899;\" /></blockquote>";
+        $replace[] = "<blockquote><div style=\"font-size: 13px;\">quote:</div><hr style=\"border: 1px solid #ACA899;\" /><div>\\1</div><hr style=\"border: 1px solid #ACA899;\" /></blockquote>";
 
-                                "<blockquote><div style=\"font-size: 13px;\">quote (\\1):</div><hr style=\"border: 1px solid #ACA899;\" /><div>\\2</div><hr style=\"border: 1px solid #ACA899;\" /></blockquote>",
-                                "<blockquote><div style=\"font-size: 13px;\">quote:</div><hr style=\"border: 1px solid #ACA899;\" /><div>\\1</div><hr style=\"border: 1px solid #ACA899;\" /></blockquote>",
-                     );
-
-                $smilies_arr = explode(",", $config_smilies);
-            foreach($smilies_arr as $smile){
-                $smile = trim($smile);
-                $find[] = "':$smile:'";
-                $replace[] = "<img style=\"border: none;\" alt=\"$smile\" src=\"$config_http_script_dir/data/emoticons/$smile.gif\" />";
-            }
-
+        $smilies_arr = explode(",", $config_smilies);
+        foreach ($smilies_arr as $null => $smile) {
+            $smile = trim($smile);
+            $find[] = "':$smile:'";
+            $replace[] = "<img style=\"border: none;\" alt=\"$smile\" src=\"$config_http_script_dir/data/emoticons/$smile.gif\" />";
+        }
     }
 
-$sourse  = preg_replace($find,$replace,$sourse);
-return $sourse;
+    $sourse = preg_replace($find, $replace, $sourse);
+    $source = ascii_convert($source);
+    return $sourse;
 }
 ////////////////////////////////////////////////////////
 // Function:         get_skin
 // Description: Hello skin!
 
-function get_skin($skin){
+function get_skin($skin)
+{
     $msn = bd_config('c2tpbg==');
     $cr = bd_config('e2NvcHlyaWdodHN9');
-    $lct = bd_config('PGRpdiBzdHlsZT0nZm9udC1zaXplOiA5cHgnPlBvd2VyZWQgYnkgPGEgc3R5bGU9J2ZvbnQtc2l6ZTogOXB4JyBocmVmPSJodHRwOi8vY3V0ZXBocC5jb20vY3V0ZW5ld3MvIiB0YXJnZXQ9X2JsYW5rPkN1dGVOZXdzIDEuMy42PC9hPiCpIDIwMDQgIDxhIHN0eWxlPSdmb250LXNpemU6IDlweCcgaHJlZj0iaHR0cDovL2N1dGVwaHAuY29tLyIgdGFyZ2V0PV9ibGFuaz5DdXRlUEhQPC9hPi48L2Rpdj4= ');
+    $lct = bd_config('PHNwYW4gc3R5bGU9ImZvbnQtc2l6ZTogOXB4Ij5Qb3dlcmVkIGJ5IDxhIHN0eWxlPSJmb250LXNpemU6IDlweCIgaHJlZj0iaHR0cDovL2N1dGVwaHAuY29tL2N1dGVuZXdzLyIgdGFyZ2V0PV9ibGFuaz5DdXRlSGFjayAwLjIuMDwvYT4gqSAyMDA1ICA8YSBzdHlsZT0iZm9udC1zaXplOiA5cHgiIGhyZWY9Imh0dHA6Ly9jdXRlcGhwLmNvbS8iIHRhcmdldD1fYmxhbms+Q3V0ZVBIUDwvYT4uPC9zcGFuPg==');
 
     $$msn = preg_replace("/$cr/", $lct, $$msn);
 
@@ -354,13 +416,13 @@ function get_skin($skin){
 // Function:         replace_news
 // Description: Replaces news charactars
 
-function replace_news($way, $sourse, $replce_n_to_br=TRUE, $use_html=TRUE){
+function replace_news($way, $sourse, $replce_n_to_br=true, $use_html=true)
+{
     global $config_allow_html_in_news, $config_allow_html_in_comments, $config_http_script_dir, $config_smilies;
     $sourse = stripslashes($sourse);
 
-    if($way == "show")
-    {
-                $find= array(
+    if ($way == "show") {
+        $find= array(
 
 /* 1 */                              "'\[upimage=([^\]]*?) ([^\]]*?)\]'i",
 /* 2 */                                        "'\[upimage=(.*?)\]'i",
@@ -385,7 +447,7 @@ function replace_news($way, $sourse, $replce_n_to_br=TRUE, $use_html=TRUE){
                             "'{nl}'",
                        );
 
-                $replace=array(
+        $replace=array(
 
 /* 1 */                                        "<img \\2 src=\"${config_http_script_dir}/skins/images/upskins/images/\\1\" style=\"border: none;\" alt=\"\" />",
 /* 2 */                                        "<img src=\"${config_http_script_dir}/skins/images/upskins/images/\\1\" style=\"border: none;\" alt=\"\" />",
@@ -410,60 +472,593 @@ function replace_news($way, $sourse, $replce_n_to_br=TRUE, $use_html=TRUE){
                                             "\n",
                         );
 
-            $smilies_arr = explode(",", $config_smilies);
-            foreach($smilies_arr as $smile){
-                $smile = trim($smile);
-                $find[] = "':$smile:'";
-                $replace[] = "<img style=\"border: none;\" alt=\"$smile\" src=\"$config_http_script_dir/data/emoticons/$smile.gif\" />";
-            }
-    }
-    elseif($way == "add"){
-
-                $find = array(
-                                        "'\|'",
-                                        "'\r'",
-                         );
-                $replace = array(
-                                        "&#124;",
-                                        "",
-                         );
-
-                if($use_html != TRUE){
-                $find[]         = "'<'";
-                $find[]         = "'>'";
-
-                        $replace[]         = "&lt;";
-                        $replace[]         = "&gt;";
+        $smilies_arr = explode(",", $config_smilies);
+        foreach ($smilies_arr as $null => $smile) {
+            $smile = trim($smile);
+            $find[] = "':$smile:'";
+            $replace[] = "<img style=\"border: none;\" alt=\"$smile\" src=\"$config_http_script_dir/data/emoticons/$smile.gif\" />";
         }
-                if($replce_n_to_br == TRUE){
-                $find[]         = "'\n'";
-                        $replace[]         = "<br />";
-        }else{
-                $find[]         = "'\n'";
-                        $replace[]         = "{nl}";
+    } elseif ($way == "add") {
+        $find = array();
+        $find[] = "'\|'";
+        $find[] = "'\r'";
+
+        $replace = array();
+        $replace[] = "&#124;";
+        $replace[] = "";
+
+        if ($use_html != true) {
+            $find[]         = "'<'";
+            $find[]         = "'>'";
+            $replace[]         = "&#060;";
+            $replace[]         = "&#062;";
         }
-
-    }
-    elseif($way == "admin"){
-
-                $find = array(
+        if ($replce_n_to_br == true) {
+            $find[]         = "'\n'";
+            $replace[]         = "<br />";
+        } else {
+            $find[]         = "'\n'";
+            $replace[]         = "{nl}";
+        }
+    } elseif ($way == "admin") {
+        $find = array(
                                         "''",
                                         "'<br />'",
                                         "'{nl}'",
                     );
-                $replace = array(
+        $replace = array(
                                         "",
                                         "\n",
                                         "\n",
                          );
-
     }
 
-$sourse  = preg_replace($find,$replace,$sourse);
-return $sourse;
+    $sourse = preg_replace($find, $replace, $sourse);
+    $source = ascii_convert($source);
+    return $sourse;
 }
 
-function bd_config($str){
-        return base64_decode($str);
+function bd_config($str)
+{
+    return base64_decode($str);
 }
-?>
+
+////////////////////////////////////////////////////////
+// Function:         cute_mail Version: 1.0a
+// Description: Send mail with cutenews
+function cute_mail($to, $subject, $message)
+{
+    // PHP Mail Headers
+//  http://us2.php.net/manual/en/function.mail.php
+if (!isset($config_mail_admin_address) || $config_mail_admin_address == "") {
+    $mail_from = "webmaster@".str_replace("www.", "", $_SERVER['SERVER_NAME']);
+} else {
+    $mail_from = $config_mail_admin_address;
+}
+    $mail_headers = "";
+    $mail_headers .= "From: $mail_from\n";
+    $mail_headers .= "Reply-to: $mail_from\n";
+    $mail_headers .= "Return-Path: $mail_from\n";
+    $mail_headers .= "Message-ID: <" . md5(uniqid(time())) . "@" . $_SERVER['SERVER_NAME'] . ">\n";
+    $mail_headers .= "MIME-Version: 1.0\n";
+    $mail_headers .= "Content-type: text/plain; charset=US-ASCII\n";
+    $mail_headers .= "Content-transfer-encoding: 7bit\n";
+    $mail_headers .= "Date: " . date('r', time()) . "\n";
+    $mail_headers .= "X-Priority: 3\n";
+    $mail_headers .= "X-MSMail-Priority: Normal\n";
+    $mail_headers .= "X-Mailer: PHP\n";
+    $mail_headers .= "X-MimeOLE: Produced By CuteNews\n";
+    mail($to, $subject, $message, $mail_headers);
+}
+
+////////////////////////////////////////////////////////
+// Function:         makeRandomPassword Version: 1.0
+// Description: Make a random password
+function makeRandomPassword()
+{
+    $salt = "abchefghjkmnpqrstuvwxyz0123456789";
+    $pass = "";
+    srand((double)microtime()*1000000);
+    $i = 0;
+    while ($i <= 7) {
+        $num = rand() % 33;
+        $tmp = substr($salt, $num, 1);
+        $pass = $pass . $tmp;
+        $i++;
+    }
+    return $pass;
+}
+
+////////////////////////////////////////////////////////
+// Function:         special_convert
+// Description: Convert from Characters, Entities, or ASCII
+function ascii_convert($in, $method="toascii")
+{
+    $out = $in;
+    $char[] = '"';
+    $entity[] = "&quot;";
+    $ascii[] = "&#034;";
+    $char[] = "'";
+    $entity[] = "&apos;";
+    $ascii[] = "&#039;";
+    $char[] = "<";
+    $entity[] = "&lt;";
+    $ascii[] = "&#060;";
+    $char[] = ">";
+    $entity[] = "&gt;";
+    $ascii[] = "&#062;";
+    $char[] = " ";
+    $entity[] = "&nbsp;";
+    $ascii[] = "&#160;";
+    $char[] = "|";
+    $entity[] = "&#124;";
+    $ascii[] = "&#124;";
+    $char[] = "ï¿½";
+    $entity[] = "&iexcl;";
+    $ascii[] = "&#161;";
+    $char[] = "ï¿½";
+    $entity[] = "&curren;";
+    $ascii[] = "&#164;";
+    $char[] = "ï¿½";
+    $entity[] = "&cent;";
+    $ascii[] = "&#162;";
+    $char[] = "ï¿½";
+    $entity[] = "&pound;";
+    $ascii[] = "&#163;";
+    $char[] = "ï¿½";
+    $entity[] = "&yen;";
+    $ascii[] = "&#165;";
+    $char[] = "ï¿½";
+    $entity[] = "&brvbar;";
+    $ascii[] = "&#166;";
+    $char[] = "ï¿½";
+    $entity[] = "&sect;";
+    $ascii[] = "&#167;";
+    $char[] = "ï¿½";
+    $entity[] = "&uml;";
+    $ascii[] = "&#168;";
+    $char[] = "ï¿½";
+    $entity[] = "&copy;";
+    $ascii[] = "&#169;";
+    $char[] = "ï¿½";
+    $entity[] = "&ordf;";
+    $ascii[] = "&#170;";
+    $char[] = "ï¿½";
+    $entity[] = "&laquo;";
+    $ascii[] = "&#171;";
+    $char[] = "ï¿½";
+    $entity[] = "&not;";
+    $ascii[] = "&#172;";
+    $char[] = "ï¿½";
+    $entity[] = "&shy;";
+    $ascii[] = "&#173;";
+    $char[] = "ï¿½";
+    $entity[] = "&reg;";
+    $ascii[] = "&#174;";
+    $char[] = "ï¿½";
+    $entity[] = "&trade;";
+    $ascii[] = "&#8482;";
+    $char[] = "ï¿½";
+    $entity[] = "&macr;";
+    $ascii[] = "&#175;";
+    $char[] = "ï¿½";
+    $entity[] = "&deg;";
+    $ascii[] = "&#176;";
+    $char[] = "ï¿½";
+    $entity[] = "&plusmn;";
+    $ascii[] = "&#177;";
+    $char[] = "ï¿½";
+    $entity[] = "&sup2;";
+    $ascii[] = "&#178;";
+    $char[] = "ï¿½";
+    $entity[] = "&sup3;";
+    $ascii[] = "&#179;";
+    $char[] = "ï¿½";
+    $entity[] = "&acute;";
+    $ascii[] = "&#180;";
+    $char[] = "ï¿½";
+    $entity[] = "&micro;";
+    $ascii[] = "&#181;";
+    $char[] = "ï¿½";
+    $entity[] = "&para;";
+    $ascii[] = "&#182;";
+    $char[] = "ï¿½";
+    $entity[] = "&middot;";
+    $ascii[] = "&#183;";
+    $char[] = "ï¿½";
+    $entity[] = "&cedil;";
+    $ascii[] = "&#184;";
+    $char[] = "ï¿½";
+    $entity[] = "&sup1;";
+    $ascii[] = "&#185;";
+    $char[] = "ï¿½";
+    $entity[] = "&ordm;";
+    $ascii[] = "&#186;";
+    $char[] = "ï¿½";
+    $entity[] = "&raquo;";
+    $ascii[] = "&#187;";
+    $char[] = "ï¿½";
+    $entity[] = "&frac14;";
+    $ascii[] = "&#188;";
+    $char[] = "ï¿½";
+    $entity[] = "&frac12;";
+    $ascii[] = "&#189;";
+    $char[] = "ï¿½";
+    $entity[] = "&frac34;";
+    $ascii[] = "&#190;";
+    $char[] = "ï¿½";
+    $entity[] = "&iquest;";
+    $ascii[] = "&#191;";
+    $char[] = "ï¿½";
+    $entity[] = "&times;";
+    $ascii[] = "&#215;";
+    $char[] = "ï¿½";
+    $entity[] = "&divide;";
+    $ascii[] = "&#247;";
+    $char[] = "ï¿½";
+    $entity[] = "&Agrave;";
+    $ascii[] = "&#192;";
+    $char[] = "ï¿½";
+    $entity[] = "&Aacute;";
+    $ascii[] = "&#193;";
+    $char[] = "ï¿½";
+    $entity[] = "&Acirc;";
+    $ascii[] = "&#194;";
+    $char[] = "ï¿½";
+    $entity[] = "&Atilde;";
+    $ascii[] = "&#195;";
+    $char[] = "ï¿½";
+    $entity[] = "&Auml;";
+    $ascii[] = "&#196;";
+    $char[] = "ï¿½";
+    $entity[] = "&Aring;";
+    $ascii[] = "&#197;";
+    $char[] = "ï¿½";
+    $entity[] = "&AElig;";
+    $ascii[] = "&#198;";
+    $char[] = "ï¿½";
+    $entity[] = "&Ccedil;";
+    $ascii[] = "&#199;";
+    $char[] = "ï¿½";
+    $entity[] = "&Egrave;";
+    $ascii[] = "&#200;";
+    $char[] = "ï¿½";
+    $entity[] = "&Eacute;";
+    $ascii[] = "&#201;";
+    $char[] = "ï¿½";
+    $entity[] = "&Ecirc;";
+    $ascii[] = "&#202;";
+    $char[] = "ï¿½";
+    $entity[] = "&Euml;";
+    $ascii[] = "&#203;";
+    $char[] = "ï¿½";
+    $entity[] = "&Igrave;";
+    $ascii[] = "&#204;";
+    $char[] = "ï¿½";
+    $entity[] = "&Iacute;";
+    $ascii[] = "&#205;";
+    $char[] = "ï¿½";
+    $entity[] = "&Icirc;";
+    $ascii[] = "&#206;";
+    $char[] = "ï¿½";
+    $entity[] = "&Iuml;";
+    $ascii[] = "&#207;";
+    $char[] = "ï¿½";
+    $entity[] = "&ETH;";
+    $ascii[] = "&#208;";
+    $char[] = "ï¿½";
+    $entity[] = "&Ntilde;";
+    $ascii[] = "&#209;";
+    $char[] = "ï¿½";
+    $entity[] = "&Ograve;";
+    $ascii[] = "&#210;";
+    $char[] = "ï¿½";
+    $entity[] = "&Oacute;";
+    $ascii[] = "&#211;";
+    $char[] = "ï¿½";
+    $entity[] = "&Ocirc;";
+    $ascii[] = "&#212;";
+    $char[] = "ï¿½";
+    $entity[] = "&Otilde;";
+    $ascii[] = "&#213;";
+    $char[] = "ï¿½";
+    $entity[] = "&Ouml;";
+    $ascii[] = "&#214;";
+    $char[] = "ï¿½";
+    $entity[] = "&Oslash;";
+    $ascii[] = "&#216;";
+    $char[] = "ï¿½";
+    $entity[] = "&Ugrave;";
+    $ascii[] = "&#217;";
+    $char[] = "ï¿½";
+    $entity[] = "&Uacute;";
+    $ascii[] = "&#218;";
+    $char[] = "ï¿½";
+    $entity[] = "&Ucirc;";
+    $ascii[] = "&#219;";
+    $char[] = "ï¿½";
+    $entity[] = "&Uuml;";
+    $ascii[] = "&#220;";
+    $char[] = "ï¿½";
+    $entity[] = "&Yacute;";
+    $ascii[] = "&#221;";
+    $char[] = "ï¿½";
+    $entity[] = "&THORN;";
+    $ascii[] = "&#222;";
+    $char[] = "ï¿½";
+    $entity[] = "&szlig;";
+    $ascii[] = "&#223;";
+    $char[] = "ï¿½";
+    $entity[] = "&agrave;";
+    $ascii[] = "&#224;";
+    $char[] = "ï¿½";
+    $entity[] = "&aacute;";
+    $ascii[] = "&#225;";
+    $char[] = "ï¿½";
+    $entity[] = "&acirc;";
+    $ascii[] = "&#226;";
+    $char[] = "ï¿½";
+    $entity[] = "&atilde;";
+    $ascii[] = "&#227;";
+    $char[] = "ï¿½";
+    $entity[] = "&auml;";
+    $ascii[] = "&#228;";
+    $char[] = "ï¿½";
+    $entity[] = "&aring;";
+    $ascii[] = "&#229;";
+    $char[] = "ï¿½";
+    $entity[] = "&aelig;";
+    $ascii[] = "&#230;";
+    $char[] = "ï¿½";
+    $entity[] = "&ccedil;";
+    $ascii[] = "&#231;";
+    $char[] = "ï¿½";
+    $entity[] = "&egrave;";
+    $ascii[] = "&#232;";
+    $char[] = "ï¿½";
+    $entity[] = "&eacute;";
+    $ascii[] = "&#233;";
+    $char[] = "ï¿½";
+    $entity[] = "&ecirc;";
+    $ascii[] = "&#234;";
+    $char[] = "ï¿½";
+    $entity[] = "&euml;";
+    $ascii[] = "&#235;";
+    $char[] = "ï¿½";
+    $entity[] = "&igrave;";
+    $ascii[] = "&#236;";
+    $char[] = "ï¿½";
+    $entity[] = "&iacute;";
+    $ascii[] = "&#237;";
+    $char[] = "ï¿½";
+    $entity[] = "&icirc;";
+    $ascii[] = "&#238;";
+    $char[] = "ï¿½";
+    $entity[] = "&iuml;";
+    $ascii[] = "&#239;";
+    $char[] = "ï¿½";
+    $entity[] = "&eth;";
+    $ascii[] = "&#240;";
+    $char[] = "ï¿½";
+    $entity[] = "&ntilde;";
+    $ascii[] = "&#241;";
+    $char[] = "ï¿½";
+    $entity[] = "&ograve;";
+    $ascii[] = "&#242;";
+    $char[] = "ï¿½";
+    $entity[] = "&oacute;";
+    $ascii[] = "&#243;";
+    $char[] = "ï¿½";
+    $entity[] = "&ocirc;";
+    $ascii[] = "&#244;";
+    $char[] = "ï¿½";
+    $entity[] = "&otilde;";
+    $ascii[] = "&#245;";
+    $char[] = "ï¿½";
+    $entity[] = "&ouml;";
+    $ascii[] = "&#246;";
+    $char[] = "ï¿½";
+    $entity[] = "&oslash;";
+    $ascii[] = "&#248;";
+    $char[] = "ï¿½";
+    $entity[] = "&ugrave;";
+    $ascii[] = "&#249;";
+    $char[] = "ï¿½";
+    $entity[] = "&uacute;";
+    $ascii[] = "&#250;";
+    $char[] = "ï¿½";
+    $entity[] = "&ucirc;";
+    $ascii[] = "&#251;";
+    $char[] = "ï¿½";
+    $entity[] = "&uuml;";
+    $ascii[] = "&#252;";
+    $char[] = "ï¿½";
+    $entity[] = "&yacute;";
+    $ascii[] = "&#253;";
+    $char[] = "ï¿½";
+    $entity[] = "&thorn;";
+    $ascii[] = "&#254;";
+    $char[] = "ï¿½";
+    $entity[] = "&yuml;";
+    $ascii[] = "&#255;";
+    $char[] = "ï¿½";
+    $entity[] = "&OElig;";
+    $ascii[] = "&#338;";
+    $char[] = "ï¿½";
+    $entity[] = "&oelig;";
+    $ascii[] = "&#339;";
+    $char[] = "ï¿½";
+    $entity[] = "&Scaron;";
+    $ascii[] = "&#352;";
+    $char[] = "ï¿½";
+    $entity[] = "&scaron;";
+    $ascii[] = "&#353;";
+    $char[] = "ï¿½";
+    $entity[] = "&Yuml;";
+    $ascii[] = "&#376;";
+    $char[] = "ï¿½";
+    $entity[] = "&circ;";
+    $ascii[] = "&#710;";
+    $char[] = "ï¿½";
+    $entity[] = "&tilde;";
+    $ascii[] = "&#732;";
+    $char[] = "ï¿½";
+    $entity[] = "&ndash;";
+    $ascii[] = "&#8211;";
+    $char[] = "ï¿½";
+    $entity[] = "&mdash;";
+    $ascii[] = "&#8212;";
+    $char[] = "ï¿½";
+    $entity[] = "&lsquo;";
+    $ascii[] = "&#8216;";
+    $char[] = "ï¿½";
+    $entity[] = "&rsquo;";
+    $ascii[] = "&#8217;";
+    $char[] = "ï¿½";
+    $entity[] = "&sbquo;";
+    $ascii[] = "&#8218;";
+    $char[] = "ï¿½";
+    $entity[] = "&ldquo;";
+    $ascii[] = "&#8220;";
+    $char[] = "ï¿½";
+    $entity[] = "&rdquo;";
+    $ascii[] = "&#8221;";
+    $char[] = "ï¿½";
+    $entity[] = "&bdquo;";
+    $ascii[] = "&#8222;";
+    $char[] = "ï¿½";
+    $entity[] = "&dagger;";
+    $ascii[] = "&#8224;";
+    $char[] = "ï¿½";
+    $entity[] = "&Dagger;";
+    $ascii[] = "&#8225;";
+    $char[] = "ï¿½";
+    $entity[] = "&hellip;";
+    $ascii[] = "&#8230;";
+    $char[] = "ï¿½";
+    $entity[] = "&permil;";
+    $ascii[] = "&#8240;";
+    $char[] = "ï¿½";
+    $entity[] = "&lsaquo;";
+    $ascii[] = "&#8249;";
+    $char[] = "ï¿½";
+    $entity[] = "&rsaquo;";
+    $ascii[] = "&#8250;";
+    $char[] = "ï¿½";
+    $entity[] = "&euro;";
+    $ascii[] = "&#8364;";
+    $char[] = "&";
+    $entity[] = "&amp;";
+    $ascii[] = "&#038;";
+    foreach ($char as $r => $char) {
+        if ($entity[$r] != "&amp;") {
+            $out = str_replace($entity[$r], $ascii[$r], $out);
+        }
+        if ($char[$r] != '"' && $char[$r] != "'" && $char[$r] != "<" && $char[$r] != ">" && $char[$r] != " ") {
+            $out = str_replace($char[$r], $ascii[$r], $out);
+        }
+    }
+    $out = str_replace("&amp;#", "&#", $out);
+    $out = str_replace("&#038;#", "&#", $out);
+    $out = str_replace("&#038;amp;", "&amp;", $out);
+    $out = str_replace("&amp;amp;", "&amp;", $out);
+    if ($method == "mail") {
+        foreach ($char as $r => $char) {
+            $out = str_replace($entity[$r], $char[$r], $out);
+            $out = str_replace($ascii[$r], $char[$r], $out);
+        }
+    }
+    return $out;
+}
+
+////////////////////////////////////////////////////////
+// Function:         profiledata
+// Description: Send profile data to string
+function profiledata($user, $output)
+{
+    global $cutepath;
+    $lines = file($cutepath.'/data/profiles.db.php');
+    foreach ($lines as $num => $line) {
+        if (eregi("<\?", $line)) {
+            continue;
+        }
+        $tmp = explode("|", $line);
+        $$tmp[0] = $line;
+    }
+
+    global $pro;
+    $pro = explode("|", $$user);
+
+    if (isset($pro[1]) && $pro[1]) {
+        $pflname = $pro[1];
+    }
+    if (isset($pro[2]) && $pro[2]) {
+        $pflnick = $pro[2];
+    }
+    if (isset($pro[3]) && $pro[3]) {
+        $pflavatar = $pro[2];
+    }
+    if (isset($pro[4]) && $pro[4]) {
+        $pflemail = $pro[4];
+    }
+    if (isset($pro[5]) && $pro[5]) {
+        $pflbirth = $pro[5];
+    }
+    if (isset($pro[6]) && $pro[6]) {
+        $pfllocation = $pro[6];
+    }
+    if (isset($pro[7]) && $pro[7]) {
+        $pflicq = $pro[7];
+    }
+    if (isset($pro[8]) && $pro[8]) {
+        $pflaim = $pro[8];
+    }
+    if (isset($pro[9]) && $pro[9]) {
+        $pflyim = $pro[9];
+    }
+    if (isset($pro[10]) && $pro[10]) {
+        $pflmsn = $pro[10];
+    }
+    $probio = $pro[11];
+    $probio = str_replace("/n", "<br />", $probio);
+    $probio = str_replace("\\", "", $probio);
+    if (isset($probio) && $probio) {
+        $pflbio = $probio;
+    }
+
+    $output = str_replace("{pfl-name}", $pflname, $output);
+    $output = str_replace("{pfl-nick}", $pflnick, $output);
+    $output = preg_replace('/\\{pfl-avatar\\}/is', ($pflavatar) ? '<img alt="" src="'.$pflavatar.'" style="border: none;" />' : '', $output);
+    $output = str_replace("{pfl-avatar-url}", $pflavatar, $output);
+    $output = str_replace("{pfl-email}", $pflemail, $output);
+    $output = preg_replace('/\\{pfl-age\\}/is', ($pflbirth) ? (date("Y")-date("Y", $pflbirth)) : '', $output);
+
+    if (!function_exists(tagdate)) {
+        function tagdate($match)
+        {
+            global $pro;
+            return date($match[1], $pro[5]);
+        }
+    }
+    $output = preg_replace_callback('#\[pfl-birth\](.*?)\[/pfl-birth\]#i', tagdate, $output);
+    $output = str_replace("{pfl-location}", $pfllocation, $output);
+    $output = str_replace("{pfl-icq}", $pflicq, $output);
+    $output = str_replace("{pfl-aim}", $pflaim, $output);
+    $output = str_replace("{pfl-yim}", $pflyim, $output);
+    $output = str_replace("{pfl-msn}", $pflmsn, $output);
+    $output = str_replace("{pfl-bio}", $pflbio, $output);
+// contact icons
+    $output = str_replace("{icon-email}", ($pflemail) ? "<img style=\"border: none;\" alt=\"\" src=\"http://tdknights.com/checker/email.gif\" />" : "", $output);
+    $output = str_replace("{icon-icq}", ($pflicq) ? "<img style=\"border: none;\" alt=\"\" src=\"http://web.icq.com/whitepages/online?icq=".$pflicq."&img=5\" />" : "", $output);
+    $output = str_replace("{icon-aim}", ($pflaim) ? "<img style=\"border: none;\" alt=\"\" src=\"http://big.oscar.aol.com/".str_replace(" ", "", $pflaim)."?on_url=http://tdknights.com/checker/aimonline.gif&off_url=http://tdknights.com/checker/aimoffline.gif\" />" : "", $output);
+    $output = str_replace("{icon-yim}", ($pflyim) ? "<img style=\"border: none;\" alt=\"\" src=\"http://opi.yahoo.com/online?u=".$pflyim."\" />" : "", $output);
+    $output = str_replace("{icon-msn}", ($pflmsn) ? "<img style=\"border: none;\" alt=\"\" src=\"http://checker.tdknights.com:1337/msn/".$pflmsn."\" />" : "", $output);
+// contact links
+    $output = preg_replace('/\\[link-email\\](.*?)\\[\\/link-email\\]/is', ($pflemail) ? '<a href="mailto:'.$pflemail.'">\\1</a>' : '', $output);
+    $output = preg_replace('/\\[link-icq\\](.*?)\\[\\/link-icq\\]/is', ($pflicq) ? '<a href="http://www.icq.com/whitepages/cmd.php?uin='.$pflicq.'&action=message">\\1</a>' : '', $output);
+    $output = preg_replace('/\\[link-aim\\](.*?)\\[\\/link-aim\\]/is', ($pflaim) ? '<a href="aim:goim?screenname='.str_replace(" ", "", $pflaim).'">\\1</a>' : '', $output);
+    $output = preg_replace('/\\[link-yim\\](.*?)\\[\\/link-yim\\]/is', ($pflyim) ? '<a href="ymsgr:sendIM?'.$pflyim.'">\\1</a>' : '', $output);
+    $output = preg_replace('/\\[link-msn\\](.*?)\\[\\/link-msn\\]/is', ($pflmsn) ? '<a href="mailto:'.$pflmsn.'">\\1</a>' : '', $output);
+
+    return $output;
+}

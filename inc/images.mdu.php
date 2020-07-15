@@ -61,18 +61,18 @@ $skin_css
             if (file_exists($config_path_image_upload."/".$image_name)) {
                 $img_result = "ok"; // if file is uploaded succesfully
             }
- // The resizeimage hack by torben rasmussen
- // checks if original image has been uploadet and then grabs it
-if ($img_result == "ok") {
-    $img_pieces = explode(".", $image_name);
-    if (in_array($img_pieces[count($img_pieces)-1], $allowed_extensions)) {
-        $new_image = time().".".$img_pieces[count($img_pieces)-1];
-        copy($config_path_image_upload."/$image_name", $config_path_image_upload."/$new_image");
-        echo("<b><font class=pass>Image was uploaded</font></b><br />");
-        echo("<img border=\"0\" alt=\"\" src='$config_path_image_upload/$new_image' /><br />");
-        echo("<br />Saved as: $config_path_image_upload/$new_image");
-    }
-}
+            // The resizeimage hack by torben rasmussen
+            // checks if original image has been uploadet and then grabs it
+            if ($img_result == "ok") {
+                $img_pieces = explode(".", $image_name);
+                if (in_array($img_pieces[count($img_pieces)-1], $allowed_extensions)) {
+                    $new_image = time().".".$img_pieces[count($img_pieces)-1];
+                    copy($config_path_image_upload."/$image_name", $config_path_image_upload."/$new_image");
+                    echo("<b><font class=pass>Image was uploaded</font></b><br />");
+                    echo("<img border=\"0\" alt=\"\" src='$config_path_image_upload/$new_image' /><br />");
+                    echo("<br />Saved as: $config_path_image_upload/$new_image");
+                }
+            }
             if ($img_result = "ok") {
                 unlink($config_path_image_upload."/".$image_name);
             }
@@ -183,7 +183,7 @@ elseif ($action == "doimagedelete") {
     if (!isset($images)) {
         msg("info", "No Images selected", "You must select images to be deleted.", "$PHP_SELF?mod=images");
     }
-//	if(!file_exists($config_path_image_upload."/".$image) or !$image){ msg("error","Error","Could not delete image", "$PHP_SELF?mod=images"); }
+    //	if(!file_exists($config_path_image_upload."/".$image) or !$image){ msg("error","Error","Could not delete image", "$PHP_SELF?mod=images"); }
     foreach ($images as $null => $image) {
         unlink($config_path_image_upload."/".$image) or print("Could not delete image <strong>$file</strong>");
     }

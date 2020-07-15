@@ -266,34 +266,34 @@ if ($full_story) {
     $output = str_replace("{php-self}", $PHP_SELF, $output);
     $output = str_replace("{cute-http-path}", $config_http_script_dir, $output);
     $output = str_replace("{views}", "0", $output);
-// XFields v2.1 - addblock
-$xfieldsaction = "templatereplacepreview";
+    // XFields v2.1 - addblock
+    $xfieldsaction = "templatereplacepreview";
     $xfieldsinput = $output;
     include("xfields.mdu.php");
     $output = $xfieldsoutput;
-// XFields v2.1 - End addblock
+    // XFields v2.1 - End addblock
     $output = replace_news("show", $output);
 
-// loginout 0.73 / Login Box v1.0 - addblock
-$output = preg_replace('/\\[logged-in\\](.*?)\\[\\/logged-in\\]/is', ($is_logged_in) ? '\\1' : '', $output);
+    // loginout 0.73 / Login Box v1.0 - addblock
+    $output = preg_replace('/\\[logged-in\\](.*?)\\[\\/logged-in\\]/is', ($is_logged_in) ? '\\1' : '', $output);
     $output = preg_replace('/\\[not-logged-in\\](.*?)\\[\\/not-logged-in\\]/is', ($is_logged_in) ? '' : '\\1', $output);
-// loginout 0.73 / Login Box v1.0 - End addblock
+    // loginout 0.73 / Login Box v1.0 - End addblock
 
-// Truncate v1.0 - addblock
-if (!function_exists(clbTruncate)) {
-    function clbTruncate($match)
-    {
-        if (strlen($match[2]) > $match[1]) {
-            return substr($match[2], 0, $match[1] - 3) . '&hellip;';
-        } else {
-            return $match[2];
+    // Truncate v1.0 - addblock
+    if (!function_exists(clbTruncate)) {
+        function clbTruncate($match)
+        {
+            if (strlen($match[2]) > $match[1]) {
+                return substr($match[2], 0, $match[1] - 3) . '&hellip;';
+            } else {
+                return $match[2];
+            }
         }
     }
-}
     $output = preg_replace_callback('#\[truncate=(.*?)\](.*?)\[/truncate\]#i', clbTruncate, $output);
-// Truncate v1.0 - End addblock
+    // Truncate v1.0 - End addblock
 
-echo("<br /><fieldset style=\"border-style:solid; border-width:1; border-color:black;\"><legend> <span style=\"font-size: 13px;\">Full Story:</span> </legend>".$output."</fieldset>");
+    echo("<br /><fieldset style=\"border-style:solid; border-width:1; border-color:black;\"><legend> <span style=\"font-size: 13px;\">Full Story:</span> </legend>".$output."</fieldset>");
 }
 
 ?>

@@ -92,7 +92,7 @@ function ckeck_uncheck_all() {
         }
         unset($sortus);
     }
-// Sort users v1.0 - End addblock
+    // Sort users v1.0 - End addblock
     $i = 1;
     foreach ($all_users as $null => $user_line) {
         $i++;
@@ -191,7 +191,7 @@ elseif ($action == "do_mass_delete") {
 
     $deleted_users = 0;
 
-// Delete News
+    // Delete News
     $old_db = file("$user_file");
     $new_db = fopen("$user_file", w);
     foreach ($old_db as $null => $old_db_line) {

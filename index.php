@@ -113,11 +113,11 @@ if ($is_logged_in) {
     }
 } elseif (!$is_logged_in) {
     // ********************************************************************************
-// Recover Pass
-// ********************************************************************************
-if ($action == "recoverpass") {
-    echoheader("user", "Lost Password");
-    echo"
+    // Recover Pass
+    // ********************************************************************************
+    if ($action == "recoverpass") {
+        echoheader("user", "Lost Password");
+        echo"
 
 <table border=0 cellpadding=0 cellspacing=0 width=\"654\" height=\"59\" >
 	<form method=post action=\"$PHP_SELF\">
@@ -162,54 +162,54 @@ if ($action == "recoverpass") {
 </table>
 
 ";
-    echofooter();
-}
-// ********************************************************************************
-// DO Recover Pass
-// ********************************************************************************
-elseif ($action == "dorecoverpass") {
-    if ($user == "" or $email == "") {
-        msg("error", "Error !!!", "All fields are required");
+        echofooter();
     }
-    $found = false;
-    $all_users = file("./data/users.db.php");
-    foreach ($all_users as $null => $user_line) {
-        $user_arr = explode("|", $user_line);
-        if (stristr("|".$user_arr[2]."|", "|".$user."|") && stristr("|".$user_arr[5]."|", "|".$email."|")) {
-            $found = true;
-            break;
+    // ********************************************************************************
+    // DO Recover Pass
+    // ********************************************************************************
+    elseif ($action == "dorecoverpass") {
+        if ($user == "" or $email == "") {
+            msg("error", "Error !!!", "All fields are required");
         }
-    }
-    if (!$found) {
-        msg("error", "Error !!!", "The username/email you enter did not match in our users database");
-    } else {
-        $new_pass = makeRandomPassword();
-        $new_db = fopen("./data/users.db.php", "w");
-        foreach ($all_users as $null => $all_users_line) {
-            $all_users_arr = explode("|", $all_users_line);
-            if ($user != $all_users_arr[2]) {
-                fwrite($new_db, "$all_users_line");
-            } else {
-                fwrite($new_db, "$all_users_arr[0]|$all_users_arr[1]|$all_users_arr[2]|".md5($new_pass)."|$all_users_arr[4]|$all_users_arr[5]|$all_users_arr[6]|$all_users_arr[7]|$all_users_arr[8]|$all_users_arr[9]|$all_users_arr[10]||\n");
+        $found = false;
+        $all_users = file("./data/users.db.php");
+        foreach ($all_users as $null => $user_line) {
+            $user_arr = explode("|", $user_line);
+            if (stristr("|".$user_arr[2]."|", "|".$user."|") && stristr("|".$user_arr[5]."|", "|".$email."|")) {
+                $found = true;
+                break;
             }
         }
-        fclose($new_db);
+        if (!$found) {
+            msg("error", "Error !!!", "The username/email you enter did not match in our users database");
+        } else {
+            $new_pass = makeRandomPassword();
+            $new_db = fopen("./data/users.db.php", "w");
+            foreach ($all_users as $null => $all_users_line) {
+                $all_users_arr = explode("|", $all_users_line);
+                if ($user != $all_users_arr[2]) {
+                    fwrite($new_db, "$all_users_line");
+                } else {
+                    fwrite($new_db, "$all_users_arr[0]|$all_users_arr[1]|$all_users_arr[2]|".md5($new_pass)."|$all_users_arr[4]|$all_users_arr[5]|$all_users_arr[6]|$all_users_arr[7]|$all_users_arr[8]|$all_users_arr[9]|$all_users_arr[10]||\n");
+                }
+            }
+            fclose($new_db);
 
-        cute_mail("$email", "Your New Password", "Hello $user,\n Your new password for the ".$_SERVER['SERVER_NAME']." news system is $new_pass, please change this password after you login.");
+            cute_mail("$email", "Your New Password", "Hello $user,\n Your new password for the ".$_SERVER['SERVER_NAME']." news system is $new_pass, please change this password after you login.");
 
-        msg("info", "Password Sent", "The new password for <b>$user</b> was sent to <b>$email</b>");
+            msg("info", "Password Sent", "The new password for <b>$user</b> was sent to <b>$email</b>");
+        }
     }
-}
 
-// ********************************************************************************
-// Register User
-// ********************************************************************************
-elseif ($action == "register") {
-    echoheader("user", "User Registration");
-    if ($config_register_allow == "no") {
-        echo "User Registration is not enabled.";
-    } else {
-        echo "
+    // ********************************************************************************
+    // Register User
+    // ********************************************************************************
+    elseif ($action == "register") {
+        echoheader("user", "User Registration");
+        if ($config_register_allow == "no") {
+            echo "User Registration is not enabled.";
+        } else {
+            echo "
    <table leftmargin=0 marginheight=0 marginwidth=0 topmargin=0 border=0 height=100% cellspacing=0>
     <form  name=login action=\"$PHP_SELF\" method=post>
     <tr>
@@ -217,8 +217,8 @@ elseif ($action == "register") {
       <td><br /><input tabindex=1 type=text name=reguser style=\"width:134\" size=20></td>
     </tr>
 ";
-        if ($config_register_mailpass == "no") {
-            echo "
+            if ($config_register_mailpass == "no") {
+                echo "
     <tr>
       <td width=80>Password: </td>
       <td><input tabindex=2 type=text name=regpass style=\"width:134\" size=20></td>
@@ -228,8 +228,8 @@ elseif ($action == "register") {
       <td><input tabindex=3 type=text name=conpass style=\"width:134\" size=20></td>
     </tr>
 ";
-        }
-        echo "
+            }
+            echo "
     <tr>
       <td width=80>Email: </td>
       <td><input tabindex=4 type=text name=regmail style=\"width:134\" size=20></td>
@@ -250,118 +250,118 @@ elseif ($action == "register") {
     </form>
    </table>
 ";
+        }
+        echofooter();
     }
-    echofooter();
-}
-// ********************************************************************************
-// DO Register User
-// ********************************************************************************
-elseif ($action == "doregister") {
-    if ($config_register_allow == "no") {
-        msg("error", "Error !!!", "User Registration is not enabled.");
-    } else {
-        $filter = explode(",", str_replace(" ", "", str_replace(",,", ",", $config_register_filter)));
-        if ($config_register_level=="4") {
-            $level_mail="Commenter";
-        }
-        if ($config_register_level=="3") {
-            $level_mail="Journalist";
-        }
-        if ($config_register_level=="2") {
-            $level_mail="Editor";
-        }
-        if ($config_register_level=="1") {
-            $level_mail="Administrator";
-        }
-        if ($config_register_mailpass == "yes") {
-            $regpass = makeRandomPassword();
-            $conpass = $regpass;
-        }
-        $reguser = trim($reguser, " \t\n\r\0");
-        $regpass = trim($regpass, " \t\n\r\0");
-        $regmail = trim($regmail, " \t\n\r\0");
-        $conpass = trim($conpass, " \t\n\r\0");
-        $conmail = trim($conmail, " \t\n\r\0");
-        if (!$reguser) {
-            msg("error", "Error !!!", "Username can not be blank");
-        }
-        if (!$regpass || !$conpass || $regpass != $conpass) {
-            msg("error", "Error !!!", "Password can not be blank, both fields must match");
-        }
-        if (!$regmail || !$conmail || $regmail != $conmail) {
-            msg("error", "Error !!!", "Email can not be blank, both fields must match");
-        }
-        if (!preg_match("/^[\.A-z0-9_\-]+[@][A-z0-9_\-]+([.][A-z0-9_\-]+)+[A-z]{1,4}$/i", $regmail)) {
-            msg("error", "Error !!!", "Invalid Email.");
-        }
-        if (preg_match("/[^\.A-z0-9_\-$]/i", $reguser, $matches)) {
-            $match = "";
-            if ($matches) {
-                $match = "You entered '$matches[0]'.";
-            }
-            msg("error", "Error !!!", "Invalid Username. Must contain only A-Z, a-z, 0-9, underscores, dashes, or periods. $match");
-        }
-        if (preg_match("/[^\.A-z0-9_\-$]/i", $regpass, $matches)) {
-            $match = "";
-            if ($matches) {
-                $match = "You entered '$matches[0]'.";
-            }
-            msg("error", "Error !!!", "Invalid Password. Must contain only A-Z, a-z, 0-9, underscores, dashes, or periods. $match");
-        }
-        foreach ($filter as $null => $block) {
-            if (stristr($reguser, $block)) {
-                msg("error", "Error !!!", "Invalid Username. <b>\"$block\"</b> not allowed.");
-            }
-        }
-
-        $add_time = time()+($config_date_adjust*60);
-        if ($reghide=="on") {
-            $hidemail="1";
+    // ********************************************************************************
+    // DO Register User
+    // ********************************************************************************
+    elseif ($action == "doregister") {
+        if ($config_register_allow == "no") {
+            msg("error", "Error !!!", "User Registration is not enabled.");
         } else {
-            $hidemail="0";
-        }
-
-        $all_users = file("./data/users.db.php");
-        foreach ($all_users as $null => $user_line) {
-            $user_arr = explode("|", $user_line);
-            if (stristr("|".$user_arr[2]."|", "|".$reguser."|")) {
-                msg("error", "Error", "This username is already taken");
+            $filter = explode(",", str_replace(" ", "", str_replace(",,", ",", $config_register_filter)));
+            if ($config_register_level=="4") {
+                $level_mail="Commenter";
             }
-            if ($config_register_multimail=="no" && stristr("|".$user_arr[5]."|", "|".$regmail."|")) {
-                msg("error", "Error", "This email address is registered to another user!");
+            if ($config_register_level=="3") {
+                $level_mail="Journalist";
             }
-        }
+            if ($config_register_level=="2") {
+                $level_mail="Editor";
+            }
+            if ($config_register_level=="1") {
+                $level_mail="Administrator";
+            }
+            if ($config_register_mailpass == "yes") {
+                $regpass = makeRandomPassword();
+                $conpass = $regpass;
+            }
+            $reguser = trim($reguser, " \t\n\r\0");
+            $regpass = trim($regpass, " \t\n\r\0");
+            $regmail = trim($regmail, " \t\n\r\0");
+            $conpass = trim($conpass, " \t\n\r\0");
+            $conmail = trim($conmail, " \t\n\r\0");
+            if (!$reguser) {
+                msg("error", "Error !!!", "Username can not be blank");
+            }
+            if (!$regpass || !$conpass || $regpass != $conpass) {
+                msg("error", "Error !!!", "Password can not be blank, both fields must match");
+            }
+            if (!$regmail || !$conmail || $regmail != $conmail) {
+                msg("error", "Error !!!", "Email can not be blank, both fields must match");
+            }
+            if (!preg_match("/^[\.A-z0-9_\-]+[@][A-z0-9_\-]+([.][A-z0-9_\-]+)+[A-z]{1,4}$/i", $regmail)) {
+                msg("error", "Error !!!", "Invalid Email.");
+            }
+            if (preg_match("/[^\.A-z0-9_\-$]/i", $reguser, $matches)) {
+                $match = "";
+                if ($matches) {
+                    $match = "You entered '$matches[0]'.";
+                }
+                msg("error", "Error !!!", "Invalid Username. Must contain only A-Z, a-z, 0-9, underscores, dashes, or periods. $match");
+            }
+            if (preg_match("/[^\.A-z0-9_\-$]/i", $regpass, $matches)) {
+                $match = "";
+                if ($matches) {
+                    $match = "You entered '$matches[0]'.";
+                }
+                msg("error", "Error !!!", "Invalid Password. Must contain only A-Z, a-z, 0-9, underscores, dashes, or periods. $match");
+            }
+            foreach ($filter as $null => $block) {
+                if (stristr($reguser, $block)) {
+                    msg("error", "Error !!!", "Invalid Username. <b>\"$block\"</b> not allowed.");
+                }
+            }
 
-        $users_file = fopen("./data/users.db.php", "a");
-        fwrite($users_file, "$add_time|$config_register_level|$reguser|".md5($regpass)."||$regmail|0|$hidemail|||||\n");
-        fclose($users_file);
+            $add_time = time()+($config_date_adjust*60);
+            if ($reghide=="on") {
+                $hidemail="1";
+            } else {
+                $hidemail="0";
+            }
 
-        if ($config_register_mailpass == "yes") {
-            cute_mail($regmail, "Registration at $SERVER_NAME", "$reguser, you have registered successfully. \n ---------- \n Your User Level is: $level_mail \n Your Password is: $regpass \n You can change this once you login. \n ---------- \n You can login here: $config_http_script_dir/ \n Thank You for Registering!");
-        }
-        if ($config_register_mailadmin == "yes") {
-            cute_mail($config_mail_admin_address, "New User: $reguser", "$reguser has registered on your CuteNews system. \n The address used to register was: $regmail \n To delete this user go to the following address: $config_http_script_dir/index.php?mod=editusers&action=dodeleteuser&id=$add_time");
-        }
+            $all_users = file("./data/users.db.php");
+            foreach ($all_users as $null => $user_line) {
+                $user_arr = explode("|", $user_line);
+                if (stristr("|".$user_arr[2]."|", "|".$reguser."|")) {
+                    msg("error", "Error", "This username is already taken");
+                }
+                if ($config_register_multimail=="no" && stristr("|".$user_arr[5]."|", "|".$regmail."|")) {
+                    msg("error", "Error", "This email address is registered to another user!");
+                }
+            }
 
-        if (!isset($config_mail_admin_address) || $config_mail_admin_address == "") {
-            $problem_contact = "an administrator";
-        } else {
-            $problem_contact = "<a href=\"mailto:".$config_register_mailadmin_address."\" target=\"_blank\">".$config_register_mailadmin_address."</a>";
-        }
-        if ($config_register_mailpass == "yes") {
-            msg("user", "$level_mail Added", "You have successfully registered as <b>\"$reguser\"</b>.<br />Your password has been emailed to <b>\"$regmail\"</b>.<br />If this information is wrong or you do not recieve your password please contact $problem_contact.");
-        } else {
-            msg("user", "$level_mail Added", "You have successfully registered as <b>\"$reguser\"</b>.<br />Your password is <b>\"$regpass\"</b>.<br />Your email address is <b>\"$regmail\"</b>.<br />If this information is wrong please contact $problem_contact.");
+            $users_file = fopen("./data/users.db.php", "a");
+            fwrite($users_file, "$add_time|$config_register_level|$reguser|".md5($regpass)."||$regmail|0|$hidemail|||||\n");
+            fclose($users_file);
+
+            if ($config_register_mailpass == "yes") {
+                cute_mail($regmail, "Registration at $SERVER_NAME", "$reguser, you have registered successfully. \n ---------- \n Your User Level is: $level_mail \n Your Password is: $regpass \n You can change this once you login. \n ---------- \n You can login here: $config_http_script_dir/ \n Thank You for Registering!");
+            }
+            if ($config_register_mailadmin == "yes") {
+                cute_mail($config_mail_admin_address, "New User: $reguser", "$reguser has registered on your CuteNews system. \n The address used to register was: $regmail \n To delete this user go to the following address: $config_http_script_dir/index.php?mod=editusers&action=dodeleteuser&id=$add_time");
+            }
+
+            if (!isset($config_mail_admin_address) || $config_mail_admin_address == "") {
+                $problem_contact = "an administrator";
+            } else {
+                $problem_contact = "<a href=\"mailto:".$config_register_mailadmin_address."\" target=\"_blank\">".$config_register_mailadmin_address."</a>";
+            }
+            if ($config_register_mailpass == "yes") {
+                msg("user", "$level_mail Added", "You have successfully registered as <b>\"$reguser\"</b>.<br />Your password has been emailed to <b>\"$regmail\"</b>.<br />If this information is wrong or you do not recieve your password please contact $problem_contact.");
+            } else {
+                msg("user", "$level_mail Added", "You have successfully registered as <b>\"$reguser\"</b>.<br />Your password is <b>\"$regpass\"</b>.<br />Your email address is <b>\"$regmail\"</b>.<br />If this information is wrong please contact $problem_contact.");
+            }
         }
     }
-}
 
-// ********************************************************************************
-// User Login
-// ********************************************************************************
-else {
-    logout($action);
-    echoheader("user", "Please Login"); ?>
+    // ********************************************************************************
+    // User Login
+    // ********************************************************************************
+    else {
+        logout($action);
+        echoheader("user", "Please Login"); ?>
 <body onload="if(document.login)document.login.enteredpw.focus();">
 <script type="text/javascript" src="md5.js"></script>
 <script>
@@ -388,10 +388,10 @@ function flogin(frm) {
 		<td></td>
 		<td align=left valign=bottom>
 			<input tabindex=3 type=checkbox class=checkbox name=rememberpw value=true<?php if ($_COOKIE["rememberpw"] || !$config_use_sessions) {
-        echo " checked=checked";
-    } ?><?php if (!$config_use_sessions) {
-        echo " disabled=disabled";
-    } ?> onclick="document.login.enteredpw.focus();"> Remember Me
+            echo " checked=checked";
+        } ?><?php if (!$config_use_sessions) {
+            echo " disabled=disabled";
+        } ?> onclick="document.login.enteredpw.focus();"> Remember Me
 			<a href="#" onclick="alert('Check \'Remember Me\' to be logged in automatically for a whole year.\nDon\'t do this in public places, or if you do be sure to logout.');">(?)</a>
 		</td>
 		<td><input tabindex=4 accesskey='s' type=submit class=altern1 style='width:134;' value='      Login...      '></td></tr>
@@ -403,7 +403,7 @@ function flogin(frm) {
 	<input type=hidden name=time value="<?php echo time(); ?>"></form>
 <?php
     echofooter();
-}
+    }
 }
 
 echo "<!-- execution time: ".substr((array_sum(explode(' ', microtime()))-$timer), 0, 7)." -->";

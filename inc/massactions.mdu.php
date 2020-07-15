@@ -40,7 +40,7 @@ elseif ($action == "do_mass_delete") {
 
     $deleted_articles = 0;
 
-// Delete News
+    // Delete News
     $old_db = file("$news_file");
     $new_db = fopen("$news_file", w);
     fwrite($new_db, "<?PHP die(\"You don't have access to open this file !!!\"); ?>\n");
@@ -63,16 +63,16 @@ elseif ($action == "do_mass_delete") {
             } else {
                 $deleted_articles ++;
             }
-// XFields v2.1 - addblock
-$xfieldsaction = "delete";
+            // XFields v2.1 - addblock
+            $xfieldsaction = "delete";
             $xfieldsid = $old_db_arr[0];
             include("xfields.mdu.php");
-// XFields v2.1 - End addblock
+            // XFields v2.1 - End addblock
         }
     }
     fclose($new_db);
 
-// Delete Comments
+    // Delete Comments
     $old_db = file("$comm_file");
     $new_db = fopen("$comm_file", w);
     fwrite($new_db, "<?PHP die(\"You don't have access to open this file !!!\"); ?>\n");
@@ -231,7 +231,7 @@ elseif ($action == "do_mass_archive") {
     $prepeared_comments_for_archive = array();
     $archived_news = 0;
 
-// Prepear the news for Archiving
+    // Prepear the news for Archiving
 
     $old_db = file("$news_file");
     $new_db = fopen("$news_file", w);
@@ -264,7 +264,7 @@ elseif ($action == "do_mass_archive") {
         msg("error", "Error", "No news were found for archiving.");
     }
 
-// Prepear the comments for Archiving
+    // Prepear the comments for Archiving
 
     $old_db = file("$comm_file");
     $new_db = fopen("$comm_file", w);
@@ -292,9 +292,9 @@ elseif ($action == "do_mass_archive") {
     }
     fclose($new_db);
 
-// Start Archiving
+    // Start Archiving
 
-$arch_name = time()+($config_date_adjust*60);
+    $arch_name = time()+($config_date_adjust*60);
 
     $arch_news = fopen("./data/archives/$arch_name.news.arch.php", w);
     @chmod("./data/archives/$arch_name.news.arch.php", 0777);
@@ -492,9 +492,9 @@ elseif ($action == "do_mass_repair") {
         $news_file = "./data/archives/$source.news.arch.php";
         $comm_file = "./data/archives/$source.comments.arch.php";
     }
-///
-// build news
-$news_db = file("$news_file");
+    ///
+    // build news
+    $news_db = file("$news_file");
     $news_item = array();
     foreach ($news_db as $null => $news_db_line) {
         if (eregi("<\?", $news_db_line)) {
@@ -523,8 +523,8 @@ $news_db = file("$news_file");
         $news_item[$item_arr[0]]['news-id'] = $item_arr[0];
         $news_item[$item_arr[0]]['news-value'] = $item_arr[0]."|".$item_arr[1]."|".$item_arr[2]."|".$item_arr[3]."|".$item_arr[4]."|".$item_arr[5]."|".$item_arr[6]."|".$item_arr[7]."|".$item_arr[8]."||";
     }
-// build comments
-$comm_db = file("$comm_file");
+    // build comments
+    $comm_db = file("$comm_file");
     foreach ($comm_db as $null => $comm_db_line) {
         if (eregi("<\?", $comm_db_line)) {
             continue;
@@ -536,8 +536,8 @@ $comm_db = file("$comm_file");
         $news_item[$item_arr[0]]['comment-exists'] = true;
         $news_item[$item_arr[0]]['comment-value'] = $item_arr[0]."|>|".$item_arr[1];
     }
-// build views
-$view_file = "$cutepath/data/counter.db.php";
+    // build views
+    $view_file = "$cutepath/data/counter.db.php";
     $view_db = file("$view_file");
     foreach ($view_db as $null => $view_db_line) {
         if (eregi("<\?", $view_db_line)) {
@@ -554,8 +554,8 @@ $view_file = "$cutepath/data/counter.db.php";
         $news_item[$item_arr[0]]['views-value'] = $item_arr[0]."|".$item_arr[1]."|";
     }
 
-// run validation
-rsort($news_item);
+    // run validation
+    rsort($news_item);
     reset($news_item);
     $fn = fopen($news_file, "wb");
     $fc = fopen($comm_file, "wb");
@@ -586,8 +586,8 @@ rsort($news_item);
     fclose($fc);
     fclose($fv);
     $news_item = null;
-///
-msg("info", "Databases Repaired", "Databases Repaired.<br />This may have caused errors.", "$PHP_SELF?mod=editnews&action=list&source=$source");
+    ///
+    msg("info", "Databases Repaired", "Databases Repaired.<br />This may have caused errors.", "$PHP_SELF?mod=editnews&action=list&source=$source");
 }
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   Mass UN-Archive

@@ -19,177 +19,177 @@ if (!isset($rowstyle2)) {
 
 
 if ($xf_inited !== true) { // Prevent "Cannot redeclare" error
-  ////////////
-  // Make the text safe for html output
-  function safehtml($text)
-  {
-      return htmlentities($text);
-  }
+    ////////////
+    // Make the text safe for html output
+    function safehtml($text)
+    {
+        return htmlentities($text);
+    }
 
-  ////////////
-  // Save XFields to a file, used when you modify it in the Options section.
-  function xfieldssave($data)
-  {
-      $data = array_values($data);
-      foreach ($data as $index => $value) {
-          if (eregi("<\?", $value)) {
-              continue;
-          }
-          $value = array_values($value);
-          foreach ($value as $index2 => $value2) {
-              if (eregi("<\?", $value2)) {
-                  continue;
-              }
-              $value2 = stripslashes($value2);
-              $value2 = str_replace("|", "&#124;", $value2);
-              $value2 = str_replace("\r\n", "__NEWL__", $value2);
-              $filecontents .= $value2 . ($index2 < count($value) - 1 ? "|" : "");
-          }
-          $filecontents .= ($index < count($data) - 1 ? "\r\n" : "");
-      }
+    ////////////
+    // Save XFields to a file, used when you modify it in the Options section.
+    function xfieldssave($data)
+    {
+        $data = array_values($data);
+        foreach ($data as $index => $value) {
+            if (eregi("<\?", $value)) {
+                continue;
+            }
+            $value = array_values($value);
+            foreach ($value as $index2 => $value2) {
+                if (eregi("<\?", $value2)) {
+                    continue;
+                }
+                $value2 = stripslashes($value2);
+                $value2 = str_replace("|", "&#124;", $value2);
+                $value2 = str_replace("\r\n", "__NEWL__", $value2);
+                $filecontents .= $value2 . ($index2 < count($value) - 1 ? "|" : "");
+            }
+            $filecontents .= ($index < count($data) - 1 ? "\r\n" : "");
+        }
 
-      $filehandle = fopen("./data/xfields.db.php", "w+");
-      if (!$filehandle) {
-          msg("error", "XFields Error", "Could not save data to file \"./data/xfields.db.php\", check if the file exists and is properly chmoded.");
-      }
-      fwrite($filehandle, "<?PHP die(\"You don't have access to open this file !!!\"); ?>\n");
-      fwrite($filehandle, $filecontents);
-      fclose($filehandle);
-      header("Location: http://" . $_SERVER["HTTP_HOST"] . $_SERVER["PHP_SELF"] .
+        $filehandle = fopen("./data/xfields.db.php", "w+");
+        if (!$filehandle) {
+            msg("error", "XFields Error", "Could not save data to file \"./data/xfields.db.php\", check if the file exists and is properly chmoded.");
+        }
+        fwrite($filehandle, "<?PHP die(\"You don't have access to open this file !!!\"); ?>\n");
+        fwrite($filehandle, $filecontents);
+        fclose($filehandle);
+        header("Location: http://" . $_SERVER["HTTP_HOST"] . $_SERVER["PHP_SELF"] .
         "?mod=xfields&xfieldsaction=configure");
-      exit;
-  }
+        exit;
+    }
 
-  ////////////
-  // Load XFields from a file, used when you do anything in the Options section.
-  function xfieldsload()
-  {
-      $filecontents = file("{$GLOBALS["cutepath"]}/data/xfields.db.php");
-      if (!is_array($filecontents)) {
-          msg("error", "XFields Error", "Could not load data from file \"{$GLOBALS["cutepath"]}/data/xfields.db.php\", check if the file exists and is properly chmoded.");
-      }
+    ////////////
+    // Load XFields from a file, used when you do anything in the Options section.
+    function xfieldsload()
+    {
+        $filecontents = file("{$GLOBALS["cutepath"]}/data/xfields.db.php");
+        if (!is_array($filecontents)) {
+            msg("error", "XFields Error", "Could not load data from file \"{$GLOBALS["cutepath"]}/data/xfields.db.php\", check if the file exists and is properly chmoded.");
+        }
 
-      foreach ($filecontents as $name => $value) {
-          if (eregi("<\?", $value)) {
-              continue;
-          }
-          $filecontents[$name] = explode("|", trim($value));
-          foreach ($filecontents[$name] as $name2 => $value2) {
-              $value2 = str_replace("&#124;", "|", $value2);
-              $value2 = str_replace("__NEWL__", "\r\n", $value2);
-              $filecontents[$name][$name2] = $value2;
-          }
-      }
-      return $filecontents;
-  }
+        foreach ($filecontents as $name => $value) {
+            if (eregi("<\?", $value)) {
+                continue;
+            }
+            $filecontents[$name] = explode("|", trim($value));
+            foreach ($filecontents[$name] as $name2 => $value2) {
+                $value2 = str_replace("&#124;", "|", $value2);
+                $value2 = str_replace("__NEWL__", "\r\n", $value2);
+                $filecontents[$name][$name2] = $value2;
+            }
+        }
+        return $filecontents;
+    }
 
-  ////////////
-  // Save XFields Data to a file, used when a news item is added/edited
-  function xfieldsdatasave($data)
-  {
-      foreach ($data as $id => $xfieldsdata) {
-          if (eregi("<\?", $xfieldsdata)) {
-              continue;
-          }
-          foreach ($xfieldsdata as $xfielddataname => $xfielddatavalue) {
-              if (eregi("<\?", $xfielddatavalue)) {
-                  continue;
-              }
-              if ($xfielddatavalue == "") {
-                  unset($xfieldsdata[$xfielddataname]);
-                  continue;
-              }
-              $xfielddataname = stripslashes($xfielddataname);
-              $xfielddatavalue = stripslashes($xfielddatavalue);
-              $xfielddataname = str_replace("|", "&#124;", $xfielddataname);
-              $xfielddataname = str_replace("\r\n", "__NEWL__", $xfielddataname);
-              $xfielddatavalue = str_replace("|", "&#124;", $xfielddatavalue);
-              $xfielddatavalue = str_replace("\r\n", "__NEWL__", $xfielddatavalue);
-              $filecontents[$id][] = "$xfielddataname|$xfielddatavalue";
-          }
-          $filecontents[$id] = "$id|>|" . implode("||", $filecontents[$id]);
-      }
-      $filecontents = @implode("\r\n", $filecontents);
+    ////////////
+    // Save XFields Data to a file, used when a news item is added/edited
+    function xfieldsdatasave($data)
+    {
+        foreach ($data as $id => $xfieldsdata) {
+            if (eregi("<\?", $xfieldsdata)) {
+                continue;
+            }
+            foreach ($xfieldsdata as $xfielddataname => $xfielddatavalue) {
+                if (eregi("<\?", $xfielddatavalue)) {
+                    continue;
+                }
+                if ($xfielddatavalue == "") {
+                    unset($xfieldsdata[$xfielddataname]);
+                    continue;
+                }
+                $xfielddataname = stripslashes($xfielddataname);
+                $xfielddatavalue = stripslashes($xfielddatavalue);
+                $xfielddataname = str_replace("|", "&#124;", $xfielddataname);
+                $xfielddataname = str_replace("\r\n", "__NEWL__", $xfielddataname);
+                $xfielddatavalue = str_replace("|", "&#124;", $xfielddatavalue);
+                $xfielddatavalue = str_replace("\r\n", "__NEWL__", $xfielddatavalue);
+                $filecontents[$id][] = "$xfielddataname|$xfielddatavalue";
+            }
+            $filecontents[$id] = "$id|>|" . implode("||", $filecontents[$id]);
+        }
+        $filecontents = @implode("\r\n", $filecontents);
 
-      $filehandle = fopen("./data/xfieldsdata.db.php", "w");
+        $filehandle = fopen("./data/xfieldsdata.db.php", "w");
 
-      if (!$filehandle) {
-          msg("error", "XFields Error", "Could not save data to file \"./data/xfieldsdata.db.php\", check if the file exists and is properly chmoded.");
-      }
-      fwrite($filehandle, "<?PHP die(\"You don't have access to open this file !!!\"); ?>\n");
-      fwrite($filehandle, $filecontents);
-      fclose($filehandle);
-  }
-  ////////////
-  // Load XFields Data from a file, used when a your news is displayed or when you edit a news item.
-  function xfieldsdataload()
-  {
-      $filecontents = file("{$GLOBALS["cutepath"]}/data/xfieldsdata.db.php");
-      if (!is_array($filecontents)) {
-          msg("error", "XFields Error", "Could not load data from file \"{$GLOBALS["cutepath"]}/data/xfieldsdata.db.php\", check if the file exists and is properly chmoded.");
-      }
+        if (!$filehandle) {
+            msg("error", "XFields Error", "Could not save data to file \"./data/xfieldsdata.db.php\", check if the file exists and is properly chmoded.");
+        }
+        fwrite($filehandle, "<?PHP die(\"You don't have access to open this file !!!\"); ?>\n");
+        fwrite($filehandle, $filecontents);
+        fclose($filehandle);
+    }
+    ////////////
+    // Load XFields Data from a file, used when a your news is displayed or when you edit a news item.
+    function xfieldsdataload()
+    {
+        $filecontents = file("{$GLOBALS["cutepath"]}/data/xfieldsdata.db.php");
+        if (!is_array($filecontents)) {
+            msg("error", "XFields Error", "Could not load data from file \"{$GLOBALS["cutepath"]}/data/xfieldsdata.db.php\", check if the file exists and is properly chmoded.");
+        }
 
-      foreach ($filecontents as $name => $value) {
-          if (eregi("<\?", $value)) {
-              continue;
-          }
-          list($id, $xfieldsdata) = explode("|>|", trim($value), 2);
-          $xfieldsdata = explode("||", $xfieldsdata);
-          foreach ($xfieldsdata as $xfielddata) {
-              if (eregi("<\?", $xfielddata)) {
-                  continue;
-              }
-              list($xfielddataname, $xfielddatavalue) = explode("|", $xfielddata);
-              $xfielddataname = str_replace("&#124;", "|", $xfielddataname);
-              $xfielddataname = str_replace("__NEWL__", "\r\n", $xfielddataname);
-              $xfielddatavalue = str_replace("&#124;", "|", $xfielddatavalue);
-              $xfielddatavalue = str_replace("__NEWL__", "\r\n", $xfielddatavalue);
-              $data[$id][$xfielddataname] = $xfielddatavalue;
-          }
-      }
-      return $data;
-  }
-  ////////////
-  // Make the HTML insertion code for the emoticons
-  function xfSmilies($element_id, $columns = false)
-  {
-      global $config_http_script_dir, $config_smilies;
+        foreach ($filecontents as $name => $value) {
+            if (eregi("<\?", $value)) {
+                continue;
+            }
+            list($id, $xfieldsdata) = explode("|>|", trim($value), 2);
+            $xfieldsdata = explode("||", $xfieldsdata);
+            foreach ($xfieldsdata as $xfielddata) {
+                if (eregi("<\?", $xfielddata)) {
+                    continue;
+                }
+                list($xfielddataname, $xfielddatavalue) = explode("|", $xfielddata);
+                $xfielddataname = str_replace("&#124;", "|", $xfielddataname);
+                $xfielddataname = str_replace("__NEWL__", "\r\n", $xfielddataname);
+                $xfielddatavalue = str_replace("&#124;", "|", $xfielddatavalue);
+                $xfielddatavalue = str_replace("__NEWL__", "\r\n", $xfielddatavalue);
+                $data[$id][$xfielddataname] = $xfielddatavalue;
+            }
+        }
+        return $data;
+    }
+    ////////////
+    // Make the HTML insertion code for the emoticons
+    function xfSmilies($element_id, $columns = false)
+    {
+        global $config_http_script_dir, $config_smilies;
 
-      $smilies = explode(",", $config_smilies);
-      $output = "";
-      foreach ($smilies as $index9 => $smily) {
-          $i++;
-          $smily = trim($smily);
+        $smilies = explode(",", $config_smilies);
+        $output = "";
+        foreach ($smilies as $index9 => $smily) {
+            $i++;
+            $smily = trim($smily);
 
-          $output .= "<a href=\"javascript:xfInsertText(':$smily:', '$element_id')\"><img style=\"border: none;\" alt=\"$smily\" src=\"$config_http_script_dir/data/emoticons/$smily.gif\" /></a>";
-          if ($columns and
+            $output .= "<a href=\"javascript:xfInsertText(':$smily:', '$element_id')\"><img style=\"border: none;\" alt=\"$smily\" src=\"$config_http_script_dir/data/emoticons/$smily.gif\" /></a>";
+            if ($columns and
           $i % $columns == 0) {
-              $output .= "<br />";
-          } else {
-              $output .= "";
-          }
-      }
-      return $output;
-  }
+                $output .= "<br />";
+            } else {
+                $output .= "";
+            }
+        }
+        return $output;
+    }
 
-  ////////////
-  // Move an array item
-  function array_move(&$array, $index1, $dist)
-  {
-      $index2 = $index1 + $dist;
-      if ($index1 < 0 or
+    ////////////
+    // Move an array item
+    function array_move(&$array, $index1, $dist)
+    {
+        $index2 = $index1 + $dist;
+        if ($index1 < 0 or
         $index1 > count($array) - 1 or
         $index2 < 0 or
         $index2 > count($array) - 1) {
-          return false;
-      }
-      $value1 = $array[$index1];
+            return false;
+        }
+        $value1 = $array[$index1];
 
-      $array[$index1] = $array[$index2];
-      $array[$index2] = $value1;
+        $array[$index1] = $array[$index2];
+        $array[$index2] = $value1;
 
-      return true;
-  }
+        return true;
+    }
 
     $xf_inited = true;
 }
@@ -233,6 +233,7 @@ Are you sure you want to delete this XField? Please not that the data you entere
       case "add":
         $xfieldsindex = count($xfields);
         // Fall trough to edit
+        // no break
       case "edit":
         if (!isset($xfieldsindex)) {
             msg("error", "XFields Error", "You should select an item to edit.<br /><a href=\"javascript:history.go(-1)\">go back</a>");

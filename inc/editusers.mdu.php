@@ -160,7 +160,7 @@ if ($action == "list") {
         }
         unset($sortus);
     }
-// Sort users v1.0 - End addblock
+    // Sort users v1.0 - End addblock
     $i = 1;
     foreach ($all_users as $null => $user_line) {
         $i++;

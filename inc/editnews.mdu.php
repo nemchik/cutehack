@@ -43,19 +43,19 @@ if ($action == "list") {
 
 
 
-// choose only needed news items
-if ($category != "" or $author != "" or $member_db[1] == 3) {
-    foreach ($all_db as $null => $raw_line) {
-        $raw_arr = explode("|", $raw_line);
-        if (($category == "" or $raw_arr[6] == $category) and ($author == "" or $raw_arr[1] == $author) and($member_db[1] != 3 or $raw_arr[1] == $member_db[2])) {
-            $all_db_tmp[] = $raw_line;
+    // choose only needed news items
+    if ($category != "" or $author != "" or $member_db[1] == 3) {
+        foreach ($all_db as $null => $raw_line) {
+            $raw_arr = explode("|", $raw_line);
+            if (($category == "" or $raw_arr[6] == $category) and ($author == "" or $raw_arr[1] == $author) and($member_db[1] != 3 or $raw_arr[1] == $member_db[2])) {
+                $all_db_tmp[] = $raw_line;
+            }
         }
+        $all_db = $all_db_tmp;
     }
-    $all_db = $all_db_tmp;
-}
 
 
-// Prelist Entries
+    // Prelist Entries
     $flag = 1;
     if ($start_from == "0") {
         $start_from = "";
@@ -147,7 +147,7 @@ if ($category != "" or $author != "" or $member_db[1] == 3) {
             }
         }//foreach news line
     }
-// End prelisting
+    // End prelisting
 
 
 
@@ -172,9 +172,9 @@ if ($category != "" or $author != "" or $member_db[1] == 3) {
 
 
 
-///////////////////////////////////////////
-// Options Bar
-echo"
+    ///////////////////////////////////////////
+    // Options Bar
+    echo"
         <table class=panel border=0 cellpadding=0 cellspacing=0 width=99% >
         <tr>
           <td align=center>
@@ -328,14 +328,14 @@ echo"
 
 &nbsp;";
 
-// End Options Bar
-////////////////////////////////////////////////////////////////////////////////    Showing List of News
-if ($entries_showed == 0) {
-    echo"<table border=0 cellpadding=0 cellspacing=0 width=100% >
+    // End Options Bar
+    ////////////////////////////////////////////////////////////////////////////////    Showing List of News
+    if ($entries_showed == 0) {
+        echo"<table border=0 cellpadding=0 cellspacing=0 width=100% >
         <form method=post name=editnews>
         <td colspan=6 ><p style=\"border: solid black 1px;  margin: 22px 22px 22px 22px; padding: 4px 4px 4px 4px;\" align=center>- No articles found -</p>";
-} else {
-    echo<<<JSCRIPT
+    } else {
+        echo<<<JSCRIPT
 <script language='JavaScript' type="text/javascript">
 <!--
 function ckeck_uncheck_all() {
@@ -355,7 +355,7 @@ function ckeck_uncheck_all() {
 </script>
 JSCRIPT;
 
-    echo"<table border=0 cellpadding=0 cellspacing=0 width=99% >
+        echo"<table border=0 cellpadding=0 cellspacing=0 width=99% >
         <form method=post name=editnews>
         <td width=312>
         Title
@@ -375,16 +375,16 @@ JSCRIPT;
         Author
 
         <td width=21 align=center> <input style=\"border: 0px; background:transparent;\" type=checkbox class=checkbox name=master_box title=\"Check All\" onclick=\"javascript:ckeck_uncheck_all()\"> </a> ";
-}
-#####################################################################################################################
-echo $entries;
-#####################################################################################################################
+    }
+    #####################################################################################################################
+    echo $entries;
+    #####################################################################################################################
 
-if ($start_from > 0) {
-    $previous = $start_from - $news_per_page;
-    $npp_nav .= "<a href=\"$PHP_SELF?mod=editnews&action=list&start_from=$previous&category=$category&author=$author&source=$source&news_per_page=$news_per_page\"><< Previous</a>";
-    $tmp = 1;
-}
+    if ($start_from > 0) {
+        $previous = $start_from - $news_per_page;
+        $npp_nav .= "<a href=\"$PHP_SELF?mod=editnews&action=list&start_from=$previous&category=$category&author=$author&source=$source&news_per_page=$news_per_page\"><< Previous</a>";
+        $tmp = 1;
+    }
 
     if ((count($all_db)-1) > $i) {
         if ($tmp) {
@@ -458,11 +458,11 @@ HTML;
 // ********************************************************************************
 elseif ($action == "editnews") {
     // Show The Article for Editing
-        if ($source == "") {
-            $all_db = file("./data/news.db.php");
-        } else {
-            $all_db = file("./data/archives/$source.news.arch.php");
-        }
+    if ($source == "") {
+        $all_db = file("./data/news.db.php");
+    } else {
+        $all_db = file("./data/archives/$source.news.arch.php");
+    }
     $found = false;
     foreach ($all_db as $null => $line) {
         $item_db=explode("|", $line);
@@ -472,7 +472,7 @@ elseif ($action == "editnews") {
         }
     }//foreach news line
 
-        $have_perm = 0;
+    $have_perm = 0;
     if (($member_db[1] == 1) or ($member_db[1] == 2)) {
         $have_perm = 1;
     } elseif ($member_db[1] == 3 and $item_db[1] == $member_db[2]) {
@@ -495,13 +495,13 @@ elseif ($action == "editnews") {
 
     echoheader("editnews", "Edit News");
 
-// XFields v2.1 - addblock
-$xfieldsaction = "categoryfilter";
+    // XFields v2.1 - addblock
+    $xfieldsaction = "categoryfilter";
     include("xfields.mdu.php");
-// XFields v2.1 - End addblock
+    // XFields v2.1 - End addblock
 
-// <!-- Start ModifyTime v2.0 -->
-  $month = "<select size=\"1\" name=\"edit_month\">";
+    // <!-- Start ModifyTime v2.0 -->
+    $month = "<select size=\"1\" name=\"edit_month\">";
     for ($i=1;$i<=12;$i++) {
         if ($i < 10) {
             $i = '0'.$i;
@@ -570,7 +570,7 @@ $xfieldsaction = "categoryfilter";
         $sec .= "<option value=\"$i\"$selected>$i</option>";
     }
     $sec .= "</select>";
-// <!-- End ModifyTime v2.0 -->
+    // <!-- End ModifyTime v2.0 -->
 
     echo"
     <SCRIPT LANGUAGE=\"JavaScript\">
@@ -773,7 +773,7 @@ $xfieldsaction = "categoryfilter";
         <td width=\"75\">
         Comments";
 
-// Show the Comments for Editing
+    // Show the Comments for Editing
 
     if ($source == "") {
         $all_comments_db = file("./data/comments.db.php");
@@ -917,14 +917,14 @@ elseif ($action == "doeditnews") {
         $news_file = "./data/archives/$source.news.arch.php";
         $com_file = "./data/archives/$source.comments.arch.php";
     }
-// XFields v2.1 - addblock
-if ($ifdelete != "yes") {
-    $xfieldsaction = "init";
-    $xfieldsid = $id;
-    include("xfields.mdu.php");
-}
-// XFields v2.1 - End addblock
-        $old_db = file("$news_file");
+    // XFields v2.1 - addblock
+    if ($ifdelete != "yes") {
+        $xfieldsaction = "init";
+        $xfieldsid = $id;
+        include("xfields.mdu.php");
+    }
+    // XFields v2.1 - End addblock
+    $old_db = file("$news_file");
     $new_db = fopen("$news_file", w);
     fwrite($new_db, "<?PHP die(\"You don't have access to open this file !!!\"); ?>\n");
     foreach ($old_db as $null => $old_db_line) {
@@ -943,14 +943,14 @@ if ($ifdelete != "yes") {
             }
             if ($have_perm) {
                 // XFields v2.1 - addblock
-$xfieldsaction = ($ifdelete == "yes" ? "delete" : "save");
+                $xfieldsaction = ($ifdelete == "yes" ? "delete" : "save");
                 $xfieldsid = $id;
                 include("xfields.mdu.php");
-// XFields v2.1 - End addblock
+                // XFields v2.1 - End addblock
                 if ($ifdelete != "yes") {
                     $okchanges = true;
-    //<!-- Start ModifyTime v2.0 -->
-            $converted_input_date = (strtotime("$edit_day ".$months[$edit_month]." $edit_year $edit_hour:$edit_min:$edit_sec")-($config_date_adjust*60));
+                    //<!-- Start ModifyTime v2.0 -->
+                    $converted_input_date = (strtotime("$edit_day ".$months[$edit_month]." $edit_year $edit_hour:$edit_min:$edit_sec")-($config_date_adjust*60));
                     $all_db = file("./data/news.db.php");
                     rsort($all_db);
                     reset($all_db);
@@ -963,18 +963,18 @@ $xfieldsaction = ($ifdelete == "yes" ? "delete" : "save");
                     if ($disable_comments != 1) {
                         $disable_comments = 0;
                     }
-            // MailOnComment v1.4 - Start ChangeBlock
-            if ($mail_on_comment != 1) {
-                $mail_on_comment = 0;
-            }
+                    // MailOnComment v1.4 - Start ChangeBlock
+                    if ($mail_on_comment != 1) {
+                        $mail_on_comment = 0;
+                    }
                     if ($config_mail_allow_comments != "yes") {
                         $mail_on_comment = 0;
                     }
                     fwrite($new_db, "$converted_input_date|$old_db_arr[1]|$title|$short_story|$full_story|$editavatar|$category|$disable_comments|$mail_on_comment||\n");
-            // MailOnComment v1.4 - End ChangeBlock
+                    // MailOnComment v1.4 - End ChangeBlock
 
-            // convert view counter
-            $view_file = "$cutepath/data/counter.db.php";
+                    // convert view counter
+                    $view_file = "$cutepath/data/counter.db.php";
                     $cvf="";
                     $converted_view_file = file($view_file);
                     for ($v = 0; $v < sizeof($converted_view_file); $v++) {
@@ -984,8 +984,8 @@ $xfieldsaction = ($ifdelete == "yes" ? "delete" : "save");
                     fwrite($fp, str_replace($pass_time, $converted_input_date, $cvf));
                     fclose($fp);
 
-            // convert comments
-            $ccf="";
+                    // convert comments
+                    $ccf="";
                     $converted_com_file = file($com_file);
                     for ($c = 0; $c < sizeof($converted_com_file); $c++) {
                         $ccf=$ccf.$converted_com_file[$c];
@@ -994,7 +994,7 @@ $xfieldsaction = ($ifdelete == "yes" ? "delete" : "save");
                     fwrite($fp, str_replace($pass_time, $converted_input_date, $ccf));
                     fclose($fp);
 
-    //<!-- End ModifyTime v2.0 -->
+                //<!-- End ModifyTime v2.0 -->
                 } else {
                     $okdeleted = true;
                     $all_file = file("$com_file");
@@ -1016,8 +1016,8 @@ $xfieldsaction = ($ifdelete == "yes" ? "delete" : "save");
         }
     }
     fclose($new_db);
-//<!-- Start ModifyTime v2.0 -->
-        $sorted_news = file("./data/news.db.php");
+    //<!-- Start ModifyTime v2.0 -->
+    $sorted_news = file("./data/news.db.php");
     sort($sorted_news);
     reset($sorted_news);
     foreach ($sorted_news as $null => $sorted_news_line) {
@@ -1026,7 +1026,7 @@ $xfieldsaction = ($ifdelete == "yes" ? "delete" : "save");
     $fp = fopen($news_file, "wb");
     fwrite($fp, $sorted_news_output);
     fclose($fp);
-//<!-- End ModifyTime v2.0 -->
+    //<!-- End ModifyTime v2.0 -->
     if ($no_permission) {
         msg("error", "NO Access", "You dont have access for this action", "$PHP_SELF?mod=editnews&action=list");
     }
@@ -1037,7 +1037,7 @@ $xfieldsaction = ($ifdelete == "yes" ? "delete" : "save");
         msg("info", "News Deleted", "The news item successfully was deleted.<br />If there were comments for this article they are also deleted.<br /><font class=error>But can not delete comments of this article !!!</font>");
     } elseif ($okchanges) {
         //<!-- Start ModifyTime v2.0 -->
-    msg("info", "Changes Saved", "The changes were successfully saved", "$PHP_SELF?mod=editnews&action=editnews&id=$converted_input_date&source=$source");
+        msg("info", "Changes Saved", "The changes were successfully saved", "$PHP_SELF?mod=editnews&action=editnews&id=$converted_input_date&source=$source");
     //<!-- End ModifyTime v2.0 -->
     } else {
         msg("error", "Error !!!", "The news item can not be found or there is an error with the news database file.");

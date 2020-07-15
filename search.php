@@ -323,13 +323,13 @@ if ($dosearch == "yes") {
                 $item_arr = explode("|", $single_line);
                 $local_id = $item_arr[0];
 
-// search cats
-if ($category == $item_arr[6] || $fcat == true || !isset($category)) {
-    if ($local_id == $news_id) {
-        echo"<br /><b><a href=\"$PHP_SELF?misc=search&subaction=showfull&id=$local_id&archive=$archive&cnshow=news&ucat=$item_arr[6]&start_from=&$user_query\">$item_arr[2]</a></b> (". date("d F, Y", $item_arr[0]) .")";
-    }
-}
-// show cats
+                // search cats
+                if ($category == $item_arr[6] || $fcat == true || !isset($category)) {
+                    if ($local_id == $news_id) {
+                        echo"<br /><b><a href=\"$PHP_SELF?misc=search&subaction=showfull&id=$local_id&archive=$archive&cnshow=news&ucat=$item_arr[6]&start_from=&$user_query\">$item_arr[2]</a></b> (". date("d F, Y", $item_arr[0]) .")";
+                    }
+                }
+                // show cats
             }
         }
     } else {

@@ -17,13 +17,13 @@ if ($action == "addnews") {
     $cat_lines = file("./data/category.db.php");
     echoheader("addnews", "Add News");
 
-// XFields v2.1 - addblock
-$xfieldsaction = "categoryfilter";
+    // XFields v2.1 - addblock
+    $xfieldsaction = "categoryfilter";
     include("xfields.mdu.php");
-// XFields v2.1 - End addblock
+    // XFields v2.1 - End addblock
 
-// <!-- Start ModifyTime v2.0 -->
-  $month = "<select size=\"1\" name=\"edit_month\">";
+    // <!-- Start ModifyTime v2.0 -->
+    $month = "<select size=\"1\" name=\"edit_month\">";
     for ($i=1;$i<=12;$i++) {
         if ($i < 10) {
             $i = '0'.$i;
@@ -92,7 +92,7 @@ $xfieldsaction = "categoryfilter";
         $sec .= "<option value=\"$i\"$selected>$i</option>";
     }
     $sec .= "</select>";
-// <!-- End ModifyTime v2.0 -->
+    // <!-- End ModifyTime v2.0 -->
 
     echo "
     <SCRIPT LANGUAGE=\"JavaScript\">
@@ -162,19 +162,19 @@ $xfieldsaction = "categoryfilter";
         }
         echo"</select></tr>";
     }
-// XFields v2.1 - addblock
-$xfieldsaction = "list";
+    // XFields v2.1 - addblock
+    $xfieldsaction = "list";
     $xfieldsadd = true;
     include("xfields.mdu.php");
-// XFields v2.1 - End addblock
-if ($config_allow_short == "yes"  || $config_short_full == "short") {
-    echo"<tr>
+    // XFields v2.1 - End addblock
+    if ($config_allow_short == "yes"  || $config_short_full == "short") {
+        echo"<tr>
 	<td width=\"75\" valign=\"top\">
 	<br />Short Story";
-    if ($config_allow_full == "yes") {
-        echo"<br /><font class=\"smallesttext\">(leave blank for shortened full story)</font>";
-    }
-    echo"
+        if ($config_allow_full == "yes") {
+            echo"<br /><font class=\"smallesttext\">(leave blank for shortened full story)</font>";
+        }
+        echo"
 	<td>
 	<textarea rows=\"8\" cols=\"74\" name=\"short_story\" tabindex=4></textarea>
 	<td width=\"108\" valign=\"top\">
@@ -190,10 +190,10 @@ if ($config_allow_short == "yes"  || $config_short_full == "short") {
 	}
     </script>";
 
-    echo insertSmilies('short', 4);
-} else {
-    echo"<input type=\"hidden\" name=\"short_story\" value=\"\">";
-}
+        echo insertSmilies('short', 4);
+    } else {
+        echo"<input type=\"hidden\" name=\"short_story\" value=\"\">";
+    }
     if ($config_allow_full == "yes" || $config_short_full == "full") {
         echo"
     </tr>
@@ -309,8 +309,8 @@ elseif ($action == "doaddnews") {
     }
 
 
-// Save The News Article In Active_News_File
-$all_db = file("./data/news.db.php");
+    // Save The News Article In Active_News_File
+    $all_db = file("./data/news.db.php");
     foreach ($all_db as $null => $news_line) {
         if (eregi("<\?", $news_line)) {
             continue;
@@ -320,16 +320,16 @@ $all_db = file("./data/news.db.php");
             $added_time++;
         }
     }
-// XFields v2.1 - addblock
-$xfieldsid = $added_time;
+    // XFields v2.1 - addblock
+    $xfieldsid = $added_time;
     $xfieldsaction = "init";
     include("xfields.mdu.php");
     $xfieldsaction = "save";
     include("xfields.mdu.php");
-// XFields v2.1 - End addblock
-if ($disable_comments != 1) {
-    $disable_comments = 0;
-}
+    // XFields v2.1 - End addblock
+    if ($disable_comments != 1) {
+        $disable_comments = 0;
+    }
     if ($mail_on_comment != 1) {
         $mail_on_comment = 0;
     }
@@ -349,10 +349,10 @@ if ($disable_comments != 1) {
     }
     fclose($news_file);
 
-// Add Blank Comment In The Active_Comments_File
+    // Add Blank Comment In The Active_Comments_File
     $old_com_db = file("./data/comments.db.php");
     $new_com_db = fopen("./data/comments.db.php", "w");
-// <!-- Start ModifyTime v2.0 -->
+    // <!-- Start ModifyTime v2.0 -->
     fwrite($new_com_db, "$added_time|>|\n");
     rsort($old_com_db);
     reset($old_com_db);
@@ -362,10 +362,10 @@ if ($disable_comments != 1) {
         }
         fwrite($new_com_db, "$line");
     }
-// <!-- End ModifyTime v2.0 -->
+    // <!-- End ModifyTime v2.0 -->
     fclose($new_com_db);
 
-// Incrase By 1 The Number of Written News for Current User
+    // Incrase By 1 The Number of Written News for Current User
     $old_user_db = file("./data/users.db.php");
     $new_user_db = fopen("./data/users.db.php", w);
     foreach ($old_user_db as $null => $old_user_db_line) {

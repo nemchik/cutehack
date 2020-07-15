@@ -529,12 +529,12 @@ function bd_config($str)
 function cute_mail($to, $subject, $message)
 {
     // PHP Mail Headers
-//  http://us2.php.net/manual/en/function.mail.php
-if (!isset($config_mail_admin_address) || $config_mail_admin_address == "") {
-    $mail_from = "webmaster@".str_replace("www.", "", $_SERVER['SERVER_NAME']);
-} else {
-    $mail_from = $config_mail_admin_address;
-}
+    //  http://us2.php.net/manual/en/function.mail.php
+    if (!isset($config_mail_admin_address) || $config_mail_admin_address == "") {
+        $mail_from = "webmaster@".str_replace("www.", "", $_SERVER['SERVER_NAME']);
+    } else {
+        $mail_from = $config_mail_admin_address;
+    }
     $mail_headers = "";
     $mail_headers .= "From: $mail_from\n";
     $mail_headers .= "Reply-to: $mail_from\n";
@@ -1047,13 +1047,13 @@ function profiledata($user, $output)
     $output = str_replace("{pfl-yim}", $pflyim, $output);
     $output = str_replace("{pfl-msn}", $pflmsn, $output);
     $output = str_replace("{pfl-bio}", $pflbio, $output);
-// contact icons
+    // contact icons
     $output = str_replace("{icon-email}", ($pflemail) ? "<img style=\"border: none;\" alt=\"\" src=\"http://tdknights.com/checker/email.gif\" />" : "", $output);
     $output = str_replace("{icon-icq}", ($pflicq) ? "<img style=\"border: none;\" alt=\"\" src=\"http://web.icq.com/whitepages/online?icq=".$pflicq."&img=5\" />" : "", $output);
     $output = str_replace("{icon-aim}", ($pflaim) ? "<img style=\"border: none;\" alt=\"\" src=\"http://big.oscar.aol.com/".str_replace(" ", "", $pflaim)."?on_url=http://tdknights.com/checker/aimonline.gif&off_url=http://tdknights.com/checker/aimoffline.gif\" />" : "", $output);
     $output = str_replace("{icon-yim}", ($pflyim) ? "<img style=\"border: none;\" alt=\"\" src=\"http://opi.yahoo.com/online?u=".$pflyim."\" />" : "", $output);
     $output = str_replace("{icon-msn}", ($pflmsn) ? "<img style=\"border: none;\" alt=\"\" src=\"http://checker.tdknights.com:1337/msn/".$pflmsn."\" />" : "", $output);
-// contact links
+    // contact links
     $output = preg_replace('/\\[link-email\\](.*?)\\[\\/link-email\\]/is', ($pflemail) ? '<a href="mailto:'.$pflemail.'">\\1</a>' : '', $output);
     $output = preg_replace('/\\[link-icq\\](.*?)\\[\\/link-icq\\]/is', ($pflicq) ? '<a href="http://www.icq.com/whitepages/cmd.php?uin='.$pflicq.'&action=message">\\1</a>' : '', $output);
     $output = preg_replace('/\\[link-aim\\](.*?)\\[\\/link-aim\\]/is', ($pflaim) ? '<a href="aim:goim?screenname='.str_replace(" ", "", $pflaim).'">\\1</a>' : '', $output);

@@ -76,32 +76,32 @@ if ($subaction == "" or !isset($subaction)) {
                 $show_timestamp = $show_last;
             }
 
-// Archive Date Header
-if ($show_ah == true) {
-    if (!$config_dateheader_archive || $config_dateheader_archive == "") {
-        $config_dateheader_archive = "Y";
-    }
-if ($dateheader != date($config_dateheader_archive, $first_timestamp)) {
-    $dateheader = date($config_dateheader_archive, $first_timestamp);
-    if (!isset($template) || $template == "") {
-        include("$cutepath/data/Default_dh.tpl.php");
-    } else {
-        include("$cutepath/data/".$template."_dh.tpl.php");
-    }
-    $template_comment = str_replace("{archiveheader}", $dateheader, $template_comment);
-    echo $template_comment;
-    if (!isset($template) || $template == "") {
-        include("$cutepath/data/Default.tpl.php");
-    } else {
-        include("$cutepath/data/".$template.".tpl.php");
-    }
-}
-}
-// Archive Date Header
+            // Archive Date Header
+            if ($show_ah == true) {
+                if (!$config_dateheader_archive || $config_dateheader_archive == "") {
+                    $config_dateheader_archive = "Y";
+                }
+                if ($dateheader != date($config_dateheader_archive, $first_timestamp)) {
+                    $dateheader = date($config_dateheader_archive, $first_timestamp);
+                    if (!isset($template) || $template == "") {
+                        include("$cutepath/data/Default_dh.tpl.php");
+                    } else {
+                        include("$cutepath/data/".$template."_dh.tpl.php");
+                    }
+                    $template_comment = str_replace("{archiveheader}", $dateheader, $template_comment);
+                    echo $template_comment;
+                    if (!isset($template) || $template == "") {
+                        include("$cutepath/data/Default.tpl.php");
+                    } else {
+                        include("$cutepath/data/".$template.".tpl.php");
+                    }
+                }
+            }
+            // Archive Date Header
 
-if (date($config_timestamp_archive, $first_timestamp) == date($config_timestamp_archive, $last_timestamp)) {
-    $show_timestamp = $show_first;
-}
+            if (date($config_timestamp_archive, $first_timestamp) == date($config_timestamp_archive, $last_timestamp)) {
+                $show_timestamp = $show_first;
+            }
             echo"<a href=\"$PHP_SELF?archive=$arch_file&subaction=list-archive&$user_query\">$show_timestamp, (<b>$count</b>)</a><br />";
         }
     }

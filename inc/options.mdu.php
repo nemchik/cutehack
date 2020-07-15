@@ -123,9 +123,9 @@ elseif ($action == "personal") {
         $ifchecked = "Checked";
     }                //if user wants to hide his e-mail
 
-     foreach ($member_db as $key=>$value) {
-         $member_db[$key]  = stripslashes(preg_replace(array("'\"'", "'\''"), array("&quot;", "&#039;"), $member_db[$key]));
-     }
+    foreach ($member_db as $key=>$value) {
+        $member_db[$key]  = stripslashes(preg_replace(array("'\"'", "'\''"), array("&quot;", "&#039;"), $member_db[$key]));
+    }
 
     $bg = "class=altern1";
     echo"
@@ -621,7 +621,7 @@ elseif ($action == "templates") {
     /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       Detect all template packs we have
      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-        $templates_list = array();
+    $templates_list = array();
     if (!$handle = opendir("./data")) {
         die("<center>Can not open directory $cutepath/data ");
     }
@@ -636,53 +636,53 @@ elseif ($action == "templates") {
     /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       If we want to create new template
      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-        if ($subaction == "new") {
-            echoheader("options", "New Template");
+    if ($subaction == "new") {
+        echoheader("options", "New Template");
 
-            echo"<form method=post action=\"$PHP_SELF\"><table border=0 cellpadding=0 cellspacing=0 width=100% height=100%><tr><td >Create new template based on: <select name=base_template>";
-            foreach ($templates_list as $null => $single_template) {
-                echo "<option value=\"$single_template\">$single_template</option>";
-            }
-            echo '</select> with name <input type=text name=template_name> &nbsp;<input type=submit value="Create Template">
+        echo"<form method=post action=\"$PHP_SELF\"><table border=0 cellpadding=0 cellspacing=0 width=100% height=100%><tr><td >Create new template based on: <select name=base_template>";
+        foreach ($templates_list as $null => $single_template) {
+            echo "<option value=\"$single_template\">$single_template</option>";
+        }
+        echo '</select> with name <input type=text name=template_name> &nbsp;<input type=submit value="Create Template">
         <input type=hidden name=mod value=options>
         <input type=hidden name=action value=templates>
         <input type=hidden name=subaction value=donew>
         </td></tr></table></form>';
-            echofooter();
-            exit;
-        }
+        echofooter();
+        exit;
+    }
     /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       Do Create the new template
      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-        if ($subaction == "donew") {
-            if (!eregi("^[a-z0-9_-]+$", $template_name)) {
-                msg("error", "Error", "The name of the template must be only with letters and numbers", "$PHP_SELF?mod=options&subaction=new&action=templates");
-            }
-            if (file_exists("./data/${template_name}.tpl.php")) {
-                msg("error", "Error", "Template with this name already exists", "$PHP_SELF?mod=options&subaction=new&action=templates");
-            }
-
-            if ($base_template != "") {
-                $base_file = "./data/${base_template}.tpl.php";
-            } else {
-                $base_file = "./data/Default.tpl.php";
-            }
-
-            if (!copy($base_file, "./data/${template_name}.tpl.php")) {
-                msg("error", "Error", "Can not copy file $base_file to ./data/ folder with name ${template_name}.tpl.php");
-            }
-            @chmod("./data/${template_name}.tpl.php", 0777);
-
-            msg("info", "Template Created", "A new template was created with name <b>${template_name}</b><br />", "$PHP_SELF?mod=options&action=templates");
+    if ($subaction == "donew") {
+        if (!eregi("^[a-z0-9_-]+$", $template_name)) {
+            msg("error", "Error", "The name of the template must be only with letters and numbers", "$PHP_SELF?mod=options&subaction=new&action=templates");
         }
+        if (file_exists("./data/${template_name}.tpl.php")) {
+            msg("error", "Error", "Template with this name already exists", "$PHP_SELF?mod=options&subaction=new&action=templates");
+        }
+
+        if ($base_template != "") {
+            $base_file = "./data/${base_template}.tpl.php";
+        } else {
+            $base_file = "./data/Default.tpl.php";
+        }
+
+        if (!copy($base_file, "./data/${template_name}.tpl.php")) {
+            msg("error", "Error", "Can not copy file $base_file to ./data/ folder with name ${template_name}.tpl.php");
+        }
+        @chmod("./data/${template_name}.tpl.php", 0777);
+
+        msg("info", "Template Created", "A new template was created with name <b>${template_name}</b><br />", "$PHP_SELF?mod=options&action=templates");
+    }
     /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       Deleting template, preparation
      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-        if ($subaction == "delete") {
-            if (strtolower($do_template) == "default") {
-                msg("Error", "Error !!!", "You can not delete the default template", "$PHP_SELF?mod=options&action=templates");
-            }
-            $msg = "<form method=post action=\"$PHP_SELF\">Are you sure you want to delete the template <b>$do_template</b> ?<br /><br />
+    if ($subaction == "delete") {
+        if (strtolower($do_template) == "default") {
+            msg("Error", "Error !!!", "You can not delete the default template", "$PHP_SELF?mod=options&action=templates");
+        }
+        $msg = "<form method=post action=\"$PHP_SELF\">Are you sure you want to delete the template <b>$do_template</b> ?<br /><br />
         <input type=submit value=\" Yes, Delete This Template\"> &nbsp;<input onClick=\"document.location='$PHP_SELF?mod=options&action=templates';\" type=button value=\"Cancel\">
         <input type=hidden name=mod value=options>
         <input type=hidden name=action value=templates>
@@ -690,22 +690,22 @@ elseif ($action == "templates") {
         <input type=hidden name=do_template value=\"$do_template\">
         </form>";
 
-            msg("info", "Deleting Template", $msg);
-        }
+        msg("info", "Deleting Template", $msg);
+    }
     /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       DO Deleting template
      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-        if ($subaction == "dodelete") {
-            if (strtolower($do_template) == "default") {
-                msg("Error", "Error !!!", "You can not delete the default template", "$PHP_SELF?mod=options&action=templates");
-            }
-            $unlink = unlink("./data/${do_template}.tpl.php");
-            if (!$unlink) {
-                msg("error", "Error", "Can not delete file ./data/${do_template}.tpl.php <br />maybe the is no permission from the server");
-            } else {
-                msg("info", "Template Deleted", "The template <b>${do_template}</b> was deleted.", "$PHP_SELF?mod=options&action=templates");
-            }
+    if ($subaction == "dodelete") {
+        if (strtolower($do_template) == "default") {
+            msg("Error", "Error !!!", "You can not delete the default template", "$PHP_SELF?mod=options&action=templates");
         }
+        $unlink = unlink("./data/${do_template}.tpl.php");
+        if (!$unlink) {
+            msg("error", "Error", "Can not delete file ./data/${do_template}.tpl.php <br />maybe the is no permission from the server");
+        } else {
+            msg("info", "Template Deleted", "The template <b>${do_template}</b> was deleted.", "$PHP_SELF?mod=options&action=templates");
+        }
+    }
 
 
     /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1467,9 +1467,9 @@ elseif ($action == "syscon") {
 <div style=\"$divcon_general\">
 <table border=0 cellpadding=0 cellspacing=0 width=650 height=1>";
     $i=1;
-// GENERAL Config
+    // GENERAL Config
 
-showRow("Full URL to CuteNews Directory", "example: http://yoursite.com/cutenews", "<input type=text style=\"text-align: center;\"  name='save_con[http_script_dir]' value='$display_http_script_dir' size=40>");
+    showRow("Full URL to CuteNews Directory", "example: http://yoursite.com/cutenews", "<input type=text style=\"text-align: center;\"  name='save_con[http_script_dir]' value='$display_http_script_dir' size=40>");
     showRow("CuteNews Skin", "you can download more from our website", makeDropDown($sys_con_skins_arr, "save_con[skin]", "$config_skin"));
     showRow("Smilies", "separate them with commas (<b>,</b>)", "<input type=text style=\"text-align: center;\"  name='save_con[smilies]' value=\"$config_smilies\" size=40>");
     showRow("Time Zone", "adjusts time in add/edit news and when displaying", makeDropDown(array((ceil((date("Z")-date("Z"))/60)-720)=>"GMT -12:00",(ceil((date("Z")-date("Z"))/60)-660)=>"GMT -11:00",(ceil((date("Z")-date("Z"))/60)-600)=>"GMT -10:00",(ceil((date("Z")-date("Z"))/60)-540)=>"GMT -09:00",(ceil((date("Z")-date("Z"))/60)-480)=>"GMT -08:00",(ceil((date("Z")-date("Z"))/60)-420)=>"GMT -07:00",(ceil((date("Z")-date("Z"))/60)-360)=>"GMT -06:00",(ceil((date("Z")-date("Z"))/60)-300)=>"GMT -05:00",(ceil((date("Z")-date("Z"))/60)-240)=>"GMT -04:00",(ceil((date("Z")-date("Z"))/60)-180)=>"GMT -03:00",(ceil((date("Z")-date("Z"))/60)-120)=>"GMT -02:00",(ceil((date("Z")-date("Z"))/60)-060)=>"GMT -01:00",(ceil((date("Z")-date("Z"))/60)+000)=>"GMT +-0:00",(ceil((date("Z")-date("Z"))/60)+060)=>"GMT +01:00",(ceil((date("Z")-date("Z"))/60)+120)=>"GMT +02:00",(ceil((date("Z")-date("Z"))/60)+180)=>"GMT +03:00",(ceil((date("Z")-date("Z"))/60)+240)=>"GMT +04:00",(ceil((date("Z")-date("Z"))/60)+300)=>"GMT +05:00",(ceil((date("Z")-date("Z"))/60)+360)=>"GMT +06:00",(ceil((date("Z")-date("Z"))/60)+420)=>"GMT +07:00",(ceil((date("Z")-date("Z"))/60)+480)=>"GMT +08:00",(ceil((date("Z")-date("Z"))/60)+540)=>"GMT +09:00",(ceil((date("Z")-date("Z"))/60)+600)=>"GMT +10:00",(ceil((date("Z")-date("Z"))/60)+660)=>"GMT +11:00",(ceil((date("Z")-date("Z"))/60)+720)=>"GMT +12:00"), "save_con[date_adjust]", "$config_date_adjust"));
@@ -1484,12 +1484,12 @@ showRow("Full URL to CuteNews Directory", "example: http://yoursite.com/cutenews
     showRow("Notify Admin of New Users", "send an email to the admin when a new user signs up", makeDropDown(array("yes"=>"Yes","no"=>"No"), "save_con[register_mailadmin]", "$config_register_mailadmin"));
     showRow("Username/Password Filter", "separate with commas (admin,owner)", "<input type=text style=\"text-align: center;\"  name='save_con[register_filter]' value=\"$config_register_filter\" size=40>");
 
-// SEPARATOR
-echo "</table></div><div style=\"$divcon_news\"><table border=0 cellpadding=0 cellspacing=0 width=650 height=1>";
+    // SEPARATOR
+    echo "</table></div><div style=\"$divcon_news\"><table border=0 cellpadding=0 cellspacing=0 width=650 height=1>";
     $i=1;
-// NEWS Config
+    // NEWS Config
 
-showRow("Time Format For News", "view help for time formatting <a href=\"http://www.php.net/manual/en/function.date.php\" target=\"_blank\">here</a>", "<input type=text style=\"text-align: center;\"  name='save_con[timestamp_active]' value='$config_timestamp_active' size=40>");
+    showRow("Time Format For News", "view help for time formatting <a href=\"http://www.php.net/manual/en/function.date.php\" target=\"_blank\">here</a>", "<input type=text style=\"text-align: center;\"  name='save_con[timestamp_active]' value='$config_timestamp_active' size=40>");
     showRow("Time Format For Archive List", "view help for time formatting <a href=\"http://www.php.net/manual/en/function.date.php\" target=\"_blank\">here</a>", "<input type=text style=\"text-align: center;\"  name='save_con[timestamp_archive]' value='$config_timestamp_archive' size=40>");
     showRow("Time Format For ArchiveHeader", "view help for time formatting <a href=\"http://www.php.net/manual/en/function.date.php\" target=\"_blank\">here</a>", "<input type=text style=\"text-align: center;\"  name='save_con[dateheader_archive]' value='$config_dateheader_archive' size=40>");
     showRow("Reverse News", "if yes, older news will be shown on the top", makeDropDown(array("yes"=>"Yes","no"=>"No"), "save_con[reverse_active]", "$config_reverse_active"));
@@ -1506,12 +1506,12 @@ showRow("Time Format For News", "view help for time formatting <a href=\"http://
     showRow("Show Comments When Showing Full Story", "if yes, comments will be shown under the story", makeDropDown(array("yes"=>"Yes","no"=>"No"), "save_con[show_comments_with_full]", "$config_show_comments_with_full"));
     showRow("Show Prev/Next on First/Last pages", "show previous pagination link on first page and next pagination link on last page", makeDropDown(array("yes"=>"Yes","no"=>"No"), "save_con[prevnext_firstlast]", "$config_prevnext_firstlast"));
 
-// SEPARATOR
-echo "</table></div><div style=\"$divcon_comments\"><table border=0 cellpadding=0 cellspacing=0 width=650 height=1>";
+    // SEPARATOR
+    echo "</table></div><div style=\"$divcon_comments\"><table border=0 cellpadding=0 cellspacing=0 width=650 height=1>";
     $i=1;
-// COMMENTS Config
+    // COMMENTS Config
 
-showRow("Time Format For Comments", "view help for time formatting <a href=\"http://www.php.net/manual/en/function.date.php\" target=\"_blank\">here</a>", "<input type=text style=\"text-align: center;\"  name='save_con[timestamp_comment]' value='$config_timestamp_comment' size=40>");
+    showRow("Time Format For Comments", "view help for time formatting <a href=\"http://www.php.net/manual/en/function.date.php\" target=\"_blank\">here</a>", "<input type=text style=\"text-align: center;\"  name='save_con[timestamp_comment]' value='$config_timestamp_comment' size=40>");
     showRow("Reverse Comments", "if yes, newest comments will be shown on the top", makeDropDown(array("yes"=>"Yes","no"=>"No"), "save_con[reverse_comments]", "$config_reverse_comments"));
     showRow("Max. Length of Comments in Characters", "enter <b>0</b> to disable checking", "<input type=text style=\"text-align: center;\"  name='save_con[comment_max_long]' value='$config_comment_max_long' size=10>");
     showRow("Comments Per Page (Pagination)", "enter <b>0</b> or leave empty to disable pagination", "<input type=text style=\"text-align: center;\"  name='save_con[comments_per_page]' value='$config_comments_per_page' size=10>");
@@ -1526,8 +1526,8 @@ showRow("Time Format For Comments", "view help for time formatting <a href=\"htt
     showRow("Settings for Comments PopUp", "only if 'Show Comments In PopUp' is enabled", "<input type=text style=\"text-align: center;\"  name=\"save_con[comments_popup_string]\" value=\"$config_comments_popup_string\" size=40>");
     showRow("Show Full Story When Showing Comments", "if yes, comments will be shown under the story", makeDropDown(array("yes"=>"Yes","no"=>"No"), "save_con[show_full_with_comments]", "$config_show_full_with_comments"));
 
-// SEPARATOR
-echo "</table></div></td></tr></table>
+    // SEPARATOR
+    echo "</table></div></td></tr></table>
 <table align=center class=grayborder style=\"border-top: 0px;\" cellpadding=0 cellspacing=0 width=645 height=1 ><tr><td>
 <input type=hidden name='save_con[path_image_upload]' value='./data/upimages'>
 <input type=hidden name=mod value=options><input type=hidden name=action value=dosavesyscon>";
